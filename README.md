@@ -129,25 +129,6 @@ terraform apply \
 -var=zone=$ZONE
 ```
 
-### Clean up
-
-If you want to remove all the components provisioned in the environment you can execute the following command:
-
-```
-terraform destroy \
--var=project_id=$PROJECT_ID \
--var=region=$REGION \
--var=network_name=$NETWORK_NAME \
--var=subnet_name=$SUBNET_NAME \
--var=cluster_name=$CLUSTER_NAME \
--var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
--var=tpu_machine_type=$TPU_MACHINE_TYPE \
--var=tpu_topology=$TPU_TOPOLOGY \
--var=tpu_num_nodes=$TPU_NUM_NODES \
--var=num_tpu_pools=$NUM_TPU_POOLS \
--var=zone=$ZONE
-```
-
 ### Removing or reconfiguring TPU node pools
 
 If you want to remove or reconfigure TPU node pools but maintain all other configurations unchanged you can modify the input variables that control TPU node pool provisioning and reapply the Terraform configuration.
@@ -170,6 +151,28 @@ terraform apply \
 -var=num_tpu_pools=$NUM_TPU_POOLS \
 -var=zone=$ZONE
 ```
+
+To add them later on, set `tpu_machine_type`, `tpu_topology`, and `num_tpu_pools` to reflect the desired TPU configuration and re-apply Terraform.
+
+### Clean up
+
+If you want to remove all the components provisioned in the environment you can execute the following command:
+
+```
+terraform destroy \
+-var=project_id=$PROJECT_ID \
+-var=region=$REGION \
+-var=network_name=$NETWORK_NAME \
+-var=subnet_name=$SUBNET_NAME \
+-var=cluster_name=$CLUSTER_NAME \
+-var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=tpu_machine_type=$TPU_MACHINE_TYPE \
+-var=tpu_topology=$TPU_TOPOLOGY \
+-var=tpu_num_nodes=$TPU_NUM_NODES \
+-var=num_tpu_pools=$NUM_TPU_POOLS \
+-var=zone=$ZONE
+```
+
 
 ## Running training workloads
 
