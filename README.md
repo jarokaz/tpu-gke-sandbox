@@ -47,7 +47,7 @@ aiplatform.googleapis.com
 
 ```
 
-The Terraform configurations perform the following tasks:
+The Terraform configuration performs the following tasks:
 - Creates a network and a subnet for a VPC-native GKE cluster.
 - Creates a VPC-native cluster.
 - Creates a node pool with nodes equipped with CPUs only.
@@ -56,7 +56,7 @@ The Terraform configurations perform the following tasks:
 - Assigns a specified set of roles to the service account.
 - Configures the cluster for Workload Identity.
 - Creates a Google Cloud Storage bucket.
-- Adds the service account to roles/storage.legacyBucketReader bucket level permissions.
+- Adds the service account to `roles/storage.legacyBucketReader` bucket level permissions.
 
 The Terraform configuration supports the following input variables:
 
@@ -74,7 +74,7 @@ The Terraform configuration supports the following input variables:
 | gke_version | The version of GKE to deploy | 1.27.3-gke.100 |
 | cluster_description | The cluster's description | GKE cluster for running TPU training workloads |
 | cpu_pool_node_count | The number of nodes in a CPU node pool | 3 |
-| cpu_pool_machine_type | The machine type for the CPU node pool | n1-standar-4 |
+| cpu_pool_machine_type | The machine type for the CPU node pool | n1-standard-4 |
 | cpu_pool_disk_type | The disk type for nodes in the CPU node pool | pd-standard|
 | cpu_pool_disk_size | The disk size for noded in the CPU node pool | 200GB |
 | tpu_sa_name | The name of the service account that will be provisioned and used for Workload Identity | cloud-tpu-sa |
@@ -114,6 +114,48 @@ export TPU_TOPOLOGY=2x2x2
 export TPU_NUM_NODES=2
 export NUM_TPU_POOLS=1
 
+
+terraform apply \
+-var=project_id=$PROJECT_ID \
+-var=region=$REGION \
+-var=network_name=$NETWORK_NAME \
+-var=subnet_name=$SUBNET_NAME \
+-var=cluster_name=$CLUSTER_NAME \
+-var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=tpu_machine_type=$TPU_MACHINE_TYPE \
+-var=tpu_topology=$TPU_TOPOLOGY \
+-var=tpu_num_nodes=$TPU_NUM_NODES \
+-var=num_tpu_pools=$NUM_TPU_POOLS \
+-var=zone=$ZONE
+```
+
+### Clean up
+
+If you want to remove all the components provisioned in the environment you can execute the following command:
+
+```
+terraform destroy \
+-var=project_id=$PROJECT_ID \
+-var=region=$REGION \
+-var=network_name=$NETWORK_NAME \
+-var=subnet_name=$SUBNET_NAME \
+-var=cluster_name=$CLUSTER_NAME \
+-var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=tpu_machine_type=$TPU_MACHINE_TYPE \
+-var=tpu_topology=$TPU_TOPOLOGY \
+-var=tpu_num_nodes=$TPU_NUM_NODES \
+-var=num_tpu_pools=$NUM_TPU_POOLS \
+-var=zone=$ZONE
+```
+
+### Removing or reconfiguring TPU node pools
+
+If you want to remove or reconfigure TPU node pools but maintain all other configurations unchanged you can modify the input variables that control TPU node pool provisioning and reapply the Terraform configuration.
+
+For example to remove TPU node pools while not in use execute the following command.
+
+```
+export NUM_TPU_POOLS=0
 
 terraform apply \
 -var=project_id=$PROJECT_ID \
