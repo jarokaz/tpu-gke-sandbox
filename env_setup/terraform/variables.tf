@@ -88,7 +88,7 @@ variable "cpu_pool_node_count" {
 
 variable "cpu_pool_machine_type" {
     description = "Machine type for nodes in the CPU node pool"
-    default     = "n1-standard-1"
+    default     = "n1-standard-4"
 }
 
 variable "cpu_pool_disk_type" {
@@ -116,7 +116,7 @@ variable "tpu_sa_roles" {
 
 variable "tpu_namespace" {
     description = "The K8s namespace for TPU workloads."
-    default = "default"
+    default = "tpu-training"
 }
 
 variable "max_pods_per_node" {

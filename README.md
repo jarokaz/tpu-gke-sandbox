@@ -58,6 +58,36 @@ The Terraform configurations perform the following tasks:
 - Creates a Google Cloud Storage bucket.
 - Adds the service account to roles/storage.legacyBucketReader bucket level permissions.
 
+The Terraform configuration supports the following input variables:
+
+| Variable | Description | Default |
+| -------- | ------------|---------|
+| region | The compute region for the environment | NA|
+| artifact_repository_bucket_name|The name of the GCS bucket|NA|
+| zone | The zone for the cluster. Make sure that the zone supports the required TPU resources| NA |
+| networt_name | The name of the network for the cluster | NA |
+| subnet_name | The name of the subnet  for the cluster | NA |
+| subnet_ip_range | The IP address range for the subnet | 10.129.0.0/20 |
+| pods_ip_range | A secondary IP range for pods | 192.168.64.0/20 |
+| services_ip_range | A secondary IP range for services | 192.168.80.0/20 |
+| cluster_name | The name of the cluster. | NA |
+| gke_version | The version of GKE to deploy | 1.27.3-gke.100 |
+| cluster_description | The cluster's description | GKE cluster for running TPU training workloads |
+| cpu_pool_node_count | The number of nodes in a CPU node pool | 3 |
+| cpu_pool_machine_type | The machine type for the CPU node pool | n1-standar-4 |
+| cpu_pool_disk_type | The disk type for nodes in the CPU node pool | pd-standard|
+| cpu_pool_disk_size | The disk size for noded in the CPU node pool | 200GB |
+| tpu_sa_name | The name of the service account that will be provisioned and used for Workload Identity | cloud-tpu-sa |
+| tpu_sa_roles | The roles to assign to the service account | roles/storage.objectAdmin |
+| tpu_namespace | The K8s namespace for TPU workloads | tpu-training |
+| tpu_machine_type | The machine type for TPU node pools | ct4p-hightpu-4t |
+| tpu_topology | A topology of a TPU slice to provision | 2x2x2 |
+| tpu_num_nodes | The number of TPU hosts to provision. Must align with the TPU machine type and TPU topology | 2 |
+| num_tpu_pools | The number of multi-host TPU node pools to provision | 1 |
+| enable_tpu_autoscaling | Whether to enable outoscaling of TPU node pools | false |
+| tpu_node_pool_name_prefix | A prefix that will be used to name TPU node pools. An index starting with 0 will be appended to the prefix to form a TPU node pool name | tpu-node-pool |
+| multislice_group_name | A name that will be used to label a TPU node pools to support multi-slice jobs | multi-slice-group |
+
 
 
 ### Run environment provisioning job
