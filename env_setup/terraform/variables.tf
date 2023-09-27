@@ -81,23 +81,23 @@ variable "cluster_description" {
 }
 
 
-variable "default_pool_node_count" {
-    description = "The number of nodes in the default node pool"
+variable "cpu_pool_node_count" {
+    description = "The number of nodes in the CPU node pool"
     default     = 3
 }
 
-variable "default_pool_machine_type" {
-    description = "Machine type for nodes in the default node pool"
+variable "cpu_pool_machine_type" {
+    description = "Machine type for nodes in the CPU node pool"
     default     = "n1-standard-1"
 }
 
-variable "default_pool_disk_type" {
-    description = "Disk type for nodes in the default node pool"
+variable "cpu_pool_disk_type" {
+    description = "Disk type for nodes in the CPU node pool"
     default = "pd-standard"
 }
 
-variable "default_pool_disk_size" {
-    description = "Disk size for nodes in the default node pool"
+variable "cpu_pool_disk_size" {
+    description = "Disk size for nodes in the CPU node pool"
     default = 200 
 }
 

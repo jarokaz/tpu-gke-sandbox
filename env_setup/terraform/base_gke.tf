@@ -51,14 +51,14 @@ module "gke" {
   node_pools = [
     {
       name                      = "cpu-node-pool"
-      machine_type              = var.default_pool_machine_type 
- #     node_locations            = var.tpu_zone
-      min_count                 = var.default_pool_node_count 
-      max_count                 = var.default_pool_node_count
+      machine_type              = var.cpu_pool_machine_type 
+      node_locations            = var.zone
+      min_count                 = var.cpu_pool_node_count 
+      max_count                 = var.cpu_pool_node_count
       local_ssd_count           = 0
       spot                      = false
-      disk_size_gb              = var.default_pool_disk_size 
-      disk_type                 = var.default_pool_disk_type
+      disk_size_gb              = var.cpu_pool_disk_size 
+      disk_type                 = var.cpu_pool_disk_type
       image_type                = "COS_CONTAINERD"
       enable_gcfs               = false
       enable_gvnic              = false
