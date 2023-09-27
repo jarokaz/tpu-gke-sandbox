@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: train-job-name 
+  namespace: default 
+spec:
+  backoffLimit: 0
+  completions: 2
+  parallelism: 2
+  completionMode: Indexed
+  template:
+    spec:
+      subdomain: headless-svc
+      restartPolicy: Never
+      nodeSelector:
+        cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
+        cloud.google.com/gke-tpu-topology: 2x2x2
+        iam.gke.io/gke-metadata-server-enabled: "true"
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: job-name
+                operator: In
+                values: 
+                - train-job-name 
+            topologyKey: cloud.google.com/gke-nodepool
+      containers:
+      - name: tpu-job
+        image: python:3.10 
+        ports: 
+        - containerPort: 8471 # Default port using which TPU VMs communicate
+        - containerPort: 8431 # Port to export TPU runtime metrics, if supported.
+        securityContext:
+          privileged: true
+        command:
+        - bash 
+        - -c
+        - |
+          pip install 'jax[tpu]' -f https://storage.googleapis.com/jax-releases/libtpu_releases.html
+          python -c 'import jax; print("TPU cores:", jax.device_count())'
+        resources:
+          requests:
+            google.com/tpu: 4
+          limits:
+            google.com/tpu: 4
