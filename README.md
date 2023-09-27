@@ -88,114 +88,47 @@ The Terraform configuration supports the following input variables:
 | tpu_node_pool_name_prefix | A prefix that will be used to name TPU node pools. An index starting with 0 will be appended to the prefix to form a TPU node pool name | tpu-node-pool |
 | multislice_group_name | A name that will be used to label a TPU node pools to support multi-slice jobs | multi-slice-group |
 
+The Terraform is configured to maintain the configuration state in a Googel Cloud Storage. To intialize Terraform execute the following command from the `terraform` folder:
 
+```
+TF_STATE_BUCKET=jk-mlops-dev-tf-state
+TF_STATE_PREFIX=gke-tpu-training
 
-### Run environment provisioning job
+terraform init \
+-backend-config="bucket=$TF_STATE_BUCKET" \
+-backend-config="prefix=$TF_STATE_PREFIX"
+```
 
-Environment provisioning is done using a Cloud Build job that runs Terraform scripts and environment setup steps. The Terraform configuration supports a number of configurable inputs. Refer to the `/env-setup/variables.tf` for the full list and the default settings. You need to set a small set of the required parameters. Set the below environment variables to reflect your environment.
+To provision the environment configure the input variables and apply the configuration. For example to create an environment with a single TPU v4-16 slice use the following settings.
 
-- `PROJECT_ID` - your project ID
-- `REGION` - the region for a GKE cluster network
-- `ZONE` - the zone for your GKE cluster
-- `NETWORK_NAME` - the name for the network
-- `SUBNET_NAME` - the name for the subnet
-- `GCS_BUCKET_NAME` - the name of the model repository GCS bucket
-- `GKE_CLUSTER_NAME` - the name of your cluster
-- `TRITON_SA_NAME` - the name for the service account that will be used as the Triton's workload identity
-- `TRITON_NAMESAPCE` - the name of a namespace where the solution's components are deployed
-- `MACHINE_TYPE` - The machine type for the Triton GPU node pool (default: `n1-standard-4`)
-- `ACCELERATOR_TYPE` - Type of accelerator (GPUs) for the Triton node pool (default: `nvidia-tesla-t4`)
-- `ACCELERATOR_COUNT` - Number of accelerator(s) (GPUs) for the Triton node pool (default: `1`)
-
-
-```bash
+```
 export PROJECT_ID=jk-mlops-dev
-export REGION=us-central1
-export ZONE=us-central1-a
+export REGION=us-central2
+export ZONE=us-central2-b
+export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
 export NETWORK_NAME=jk-gke-network
 export SUBNET_NAME=jk-gke-subnet
-export GCS_BUCKET_NAME=jk-triton-repository
-export GKE_CLUSTER_NAME=jk-ft-gke
-export TRITON_SA_NAME=triton-sa
-export TRITON_NAMESPACE=triton
-export MACHINE_TYPE=n1-standard-4
-export ACCELERATOR_TYPE=nvidia-tesla-t4
-export ACCELERATOR_COUNT=1
+export CLUSTER_NAME=jk-tpu-training-cluster
+export TPU_MACHINE_TYPE=ct4p-hightpu-4t
+export TPU_TOPOLOGY=2x2x2
+export TPU_NUM_NODES=2
+export NUM_TPU_POOLS=1
+
+
+terraform apply \
+-var=project_id=$PROJECT_ID \
+-var=region=$REGION \
+-var=network_name=$NETWORK_NAME \
+-var=subnet_name=$SUBNET_NAME \
+-var=cluster_name=$CLUSTER_NAME \
+-var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=tpu_machine_type=$TPU_MACHINE_TYPE \
+-var=tpu_topology=$TPU_TOPOLOGY \
+-var=tpu_num_nodes=$TPU_NUM_NODES \
+-var=num_tpu_pools=$NUM_TPU_POOLS \
+-var=zone=$ZONE
 ```
 
-By default, the Terraform configuration uses Cloud Storage for the Terraform state. Set the following environment variables to the GCS location for the state.
+## Running training workloads
 
-```bash
-export TF_STATE_BUCKET=jk-mlops-dev-tf-state
-export TF_STATE_PREFIX=jax-to-ft-demo 
-```
-
-Create Cloud Storage bucket to save Terraform State
-
-```bash
-gcloud storage buckets create gs://$TF_STATE_BUCKET --location=$REGION
-```
-
-Start provisioning by using Cloud Build job to run Terraform and provision resources, deploy Triton Inference server and finalize the setup.
-
-```bash
-gcloud builds submit \
-  --region $REGION \
-  --config cloudbuild.provision.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_ZONE=$ZONE,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_GCS_BUCKET_NAME=$GCS_BUCKET_NAME,_GKE_CLUSTER_NAME=$GKE_CLUSTER_NAME,_TRITON_SA_NAME=$TRITON_SA_NAME,_TRITON_NAMESPACE=$TRITON_NAMESPACE,_MACHINE_TYPE=$MACHINE_TYPE,_ACCELERATOR_TYPE=$ACCELERATOR_TYPE,_ACCELERATOR_COUNT=$ACCELERATOR_COUNT \
-  --timeout "2h" \
-  --machine-type=e2-highcpu-32 \
-  --quiet
-```
-
-Navigate to the Cloud Build logs using the link displayed on Cloud Shell or go to the [Cloud Build page on the Cloud console](https://console.cloud.google.com/cloud-build?_ga=2.109004802.1605716039.1675990133-1112324367.1675987342). You should see similar page when the environment provision job is completed successfully:
-
-![arch](/images/build-provision.png)
-
-## Invoking sample model on Triton
-
-You can now invoke the sample model. Use the NVIDIA Triton Inference Server SDK container image.
-
-Start by configuring access to the cluster.
-
-```bash
-gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --project ${PROJECT_ID} --zone ${ZONE} 
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole cluster-admin --user "$(gcloud config get-value account)"
-```
-
-Get gateway IP address to access Triton server
-
-```
-ISTIO_GATEWAY_IP_ADDRESS=$(kubectl get services -n $TRITON_NAMESPACE \
-   -o=jsonpath='{.items[?(@.metadata.name=="istio-ingressgateway")].status.loadBalancer.ingress[0].ip}')
-```
-
-Run Triton server locally
-
-```
-docker run -it --rm --net=host  \
--e ISTIO_GATEWAY_IP_ADDRESS=${ISTIO_GATEWAY_IP_ADDRESS} \
-nvcr.io/nvidia/tritonserver:22.01-py3-sdk
-```
-
-After the container starts execute the following command from the containers command line:
-
-```
-/workspace/install/bin/image_client -u  $ISTIO_GATEWAY_IP_ADDRESS -m densenet_onnx -c 3 -s INCEPTION /workspace/images/mug.jpg
-```
-
-## Clean up
-
-
-To clean up the environment run the Cloud Build job that runs Terraform to clean up the resources.
-
-
-```bash
-gcloud builds submit \
-  --region $REGION \
-  --config cloudbuild.destroy.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_ZONE=$ZONE,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_GCS_BUCKET_NAME=$GCS_BUCKET_NAME,_GKE_CLUSTER_NAME=$GKE_CLUSTER_NAME,_TRITON_SA_NAME=$TRITON_SA_NAME,_TRITON_NAMESPACE=$TRITON_NAMESPACE \
-  --timeout "2h" \
-  --machine-type=e2-highcpu-32 \
-  --quiet
-```
+This repo includes a number of examples of TPU training workloads in the `examples` folder. Refer to the README in this folder for detailed instructions.
