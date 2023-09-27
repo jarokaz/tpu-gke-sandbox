@@ -23,8 +23,6 @@ resource "google_storage_bucket" "artifact_repository" {
 }
 
 
-
-
 resource "google_storage_bucket_iam_member" "tpu_sa_repository_permissions" {
   bucket = google_storage_bucket.artifact_repository.name
   role = "roles/storage.legacyBucketReader"
