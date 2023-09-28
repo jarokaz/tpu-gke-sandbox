@@ -4,7 +4,7 @@ This folder contains examples of how to configure and run TPU training jobs usin
 - Using the Kubernetes **Job** resource to run single-slice TPU training jobs
 - Using the Kubernetes **JobSet** resource to run multi-slice TPU training jobs
 
-To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for  single-slice jobs and the `base_multi_slice_job_spec` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these **bases**. 
+To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for  single-slice jobs and the `base_multi_slice_job_spec` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these [bases](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). 
 
 For example, the `maxtext_single_slice` contains patches to adapt the base **Job** configuration in `base_single_slice_job_spec`  to run pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
 
@@ -63,7 +63,7 @@ gcloud builds submit \
 Modify the `configs/job-spec-patch.yaml` file to reflect your environment. At minimum, modify the followining fields:
 - Set the `metadata.name` field with to a unique job name. Although not mandatory, using a unique name for each job helps with managing multiple Job resources
 - Update the `spec.template.spec.containers[name=tpu-job].image` field with your training image name
-- Update the Maxtext trainer parameters defined in the s`pec.template.spec.containers[name=tpu-job].command` field. For the detailed information on how to configure Maxtext training runs refer to [Maxtext github repo](https://github.com/google/maxtext/tree/main). At minimum, set the following parameters:
+- Update the Maxtext trainer parameters defined in the `spec.template.spec.containers[name=tpu-job].command` field. For the detailed information on how to configure Maxtext training runs refer to [Maxtext github repo](https://github.com/google/maxtext/tree/main). At minimum, set the following parameters:
   - `run_name`. This is an identifier of your run. It is used to locate and store artifacts (including checkpoints) generated during training. They will be stored in the `run_name` folder in the `base_output_directory` path (see below). If there is an existing checkpoint in this location that checkpoint will auto-resume.    
   - `base_output_directory`. This a base GCS path for storing artifacts generated during runs.
   - `dataset_path`. This is the GCS location of the C4 dataset. This should be a GCS URI up to but not including the `c4` folder.
@@ -83,7 +83,7 @@ First, list all pods started by the job
 kubectl get pods -n <YOUR TPU TRAINING NAMESPACE>
 ```
 
-Pick a any pod in your job and copy its ID. Retrieve the logs for this pod.
+Pick  any pod in your job and copy its ID. Retrieve the logs for this pod.
 
 ```
 kubectl logs <YOUR POD ID> -n <YOUR TPU TRAINING NAMESPACE>
