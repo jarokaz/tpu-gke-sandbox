@@ -20,7 +20,7 @@ This sample is located in the `maxtext_single_slice` folder. Make sure to execut
 
 ### Download the C4 dataset
 
-Before starting a training job you need to download the C4 dataset to a GCS location in your environments GCS bucket. 
+Before starting a training job you need to download the C4 dataset to a GCS location in your environment's GCS bucket. 
 
 ```
 PROJECT_ID=jk-mlops-dev
