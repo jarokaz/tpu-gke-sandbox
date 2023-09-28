@@ -12,7 +12,7 @@ A high-level diagram of the environment is shown below.
 
 The environment is based on a zonal, VPC-native GKE cluster with multiple node pools. There is a single node pool with CPU-only nodes, as well as multiple multi-host TPU slice node pools.
 
-TPU node pools are used to run single-slice or multi-slice TPU training jobs. Multiple single-slice jobs can run simultaneously, while a single multi-slice job uses multiple node pools.
+TPU node pools are used to run single-slice or multi-slice TPU training jobs. If your environment has been provisioned with a single TPU node pool you can only run single-slice jobs. If you have multiple TPU node pools you can run multiple single-slice jobs simultaneously or a single multi-slice job that uses multiple node pools.
 
 The CPU node pool is used to run auxiliary workloads, such as data preprocessing jobs or Tensorboard logs management jobs.
 
