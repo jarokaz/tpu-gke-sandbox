@@ -13,7 +13,7 @@ Before running any examples, update the `namespace` field in `kustomization.yaml
 
 ## Example 1 - Running single slice pretraining of Maxtext LLM
 
-The sample demonstrates how to configure and run a job that pretrains [Maxtext LLM](https://github.com/google/maxtext) using the [C4 dataset](https://www.tensorflow.org/datasets/catalog/c4).
+The sample demonstrates how to configure and run a job that pretrains [1B parameter Maxtext LLM](https://github.com/google/maxtext) using the [C4 dataset](https://www.tensorflow.org/datasets/catalog/c4).
 
 This sample is located in the `maxtext_single_slice` folder. Make sure to execute all commands  from this folder.
 

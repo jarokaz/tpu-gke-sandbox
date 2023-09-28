@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: maxtext-c4-pretrain-102 
+  name: maxtext-c4-pretrain-103 
 spec:
   parallelism: 2
   template:
@@ -32,6 +32,6 @@ spec:
         - MaxText/train.py
         - MaxText/configs/base.yml 
         - run_name=maxtext-c4-pretrain-102
-        - steps=500
+        - steps=800
         - dataset_path=gs://jk-gke-aiml-repository/datasets
         - base_output_directory=gs://jk-gke-aiml-repository/runs 
