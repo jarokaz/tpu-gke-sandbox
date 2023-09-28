@@ -80,7 +80,7 @@ kubectl logs <YOUR POD ID> -n <YOUR TPU TRAINING NAMESPACE>
 
 You can also monitor the job using GCP Console.
 
-#### Monitoring the job using Tensorboard
+#### Monitoring training metrics using Vertex AI Tensorboard
 
 TBD
 
