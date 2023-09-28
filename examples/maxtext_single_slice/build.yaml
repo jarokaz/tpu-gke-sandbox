@@ -15,25 +15,25 @@
 steps:
   # Clone Maxtext GitHub repo
   - id: clone repo
-    name: google/cloud-sdk:alpine
+    name: google/cloud-sdk:latest
     entrypoint: /bin/bash
     args:
       - -c
       - |
           git clone https://github.com/google/maxtext.git /workspace/maxtext
 
-  # Build Maxtext image 
-  - id: build image 
-    name: gcr.io/cloud-builders/docker
+  - id: build and upload Maxtext image 
+    name: google/cloud-sdk:latest
     entrypoint: /bin/bash
     args: 
       - -c
       - |
+          
           cd /workspace/maxtext
           chmod 755 docker_build_dependency_image.sh
-          chmod 755 docker_upload_runner.sh
           ./docker_build_dependency_image.sh MODE=stable
-          ./docker_upload_runner.sh CLOUD_IMAGE_NAME=maxtext_runner-1
+          chmod 755 docker_upload_runner.sh
+          ./docker_upload_runner.sh CLOUD_IMAGE_NAME=$_MAXTEXT_IMAGE_NAME
 
 options:
   dynamic_substitutions: true

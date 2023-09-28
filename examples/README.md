@@ -36,8 +36,13 @@ The `build.yaml` file is a **Cloud Build** configuration that automates a proces
 
 
 ```
+CLOUD_BUILD_REGION=us-central1
+MAXTEXT_IMAGE_NAME=maxtext-runner-image
+
 gcloud builds submit \
 --project $PROJECT_ID \
+--region $CLOUD_BUILD_REGION \
+--substitutions _MAXTEXT_IMAGE_NAME=$MAXTEXT_IMAGE_NAME \
 --config build.yaml \
 --machine-type=e2-highcpu-32
 ```
