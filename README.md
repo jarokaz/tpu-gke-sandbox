@@ -99,7 +99,7 @@ terraform init \
 -backend-config="prefix=$TF_STATE_PREFIX"
 ```
 
-To provision the environment configure the input variables and apply the configuration. For example to create an environment with a single TPU v4-16 slice use the following settings.
+To provision the environment configure the input variables and apply the configuration. For example, to create an environment with a single TPU v4-16 slice use the following settings.
 
 ```
 export PROJECT_ID=jk-mlops-dev
@@ -133,7 +133,7 @@ terraform apply \
 
 If you want to remove or reconfigure TPU node pools but maintain all other configurations unchanged you can modify the input variables that control TPU node pool provisioning and reapply the Terraform configuration.
 
-For example to remove TPU node pools while not in use execute the following command.
+For example to remove TPU node pools while not in use, execute the following command.
 
 ```
 export NUM_TPU_POOLS=0

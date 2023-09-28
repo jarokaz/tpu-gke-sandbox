@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: maxtext-c4-pretrain-101 
+  name: maxtext-c4-pretrain-102 
 spec:
   parallelism: 2
   template:
@@ -26,12 +26,12 @@ spec:
       serviceAccount: cloud-tpu-sa
       containers:
       - name: tpu-job 
-        image: gcr.io/jk-mlops-dev/maxtext_runner-image
+        image: gcr.io/jk-mlops-dev/maxtext-runner-image
         command:
         - python3
         - MaxText/train.py
         - MaxText/configs/base.yml 
-        - run_name=maxtext-c4-pretrain-101
+        - run_name=maxtext-c4-pretrain-102
         - steps=500
         - dataset_path=gs://jk-gke-aiml-repository/datasets
         - base_output_directory=gs://jk-gke-aiml-repository/runs 
