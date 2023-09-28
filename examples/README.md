@@ -4,9 +4,10 @@ This folder contains examples of how to configure and run TPU training workloads
 - Using a Kubernetes **Job** to run single-slice TPU training jobs
 - Using a Kubernetes **JobSet** to run multi-slice TPU training jobs
 
-To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for a single-slice job. Specific single-slice job examples are Kustomize **overlays** using this **base**. 
+To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for a single-slice job.  Single-slice job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using this **base** configuration. 
+For example, the `maxtext_single_slice` contains patches to adapt the base Job configuration to run pretraining of the *Maxtext* model. 
 
-For example, the `maxtext_single_slice` contains patches to adapt the base Job configuration to run pretraining of the *Maxtext* model. Similarly, the `base_multi_slice_job_spec` contains base configurations for multi-slice JobSet based training jobs.
+Similarly, the `base_multi_slice_job_spec` contains base configurations for multi-slice JobSet based training jobs.
 
 Before running any examples, update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs configured in your environment. This is required to make sure that the service account created in this namespace is used for Workload Identity.
 
