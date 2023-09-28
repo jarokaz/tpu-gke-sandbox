@@ -32,5 +32,6 @@ spec:
         - MaxText/train.py
         - MaxText/configs/base.yml 
         - run_name=maxtext-c4-pretrain-101
+        - steps=500
         - dataset_path=gs://jk-gke-aiml-repository/datasets
         - base_output_directory=gs://jk-gke-aiml-repository/runs 

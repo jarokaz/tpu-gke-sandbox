@@ -58,6 +58,7 @@ Modify the `configs/job-spec-patch.yaml` file to reflect your environment. At mi
   - `run_name`. This is an identifier of your run. It is used to locate and store artifacts (including checkpoints) generated during training. They will be stored in the `run_name` folder in the `base_output_directory` path (see below). If there is an existing checkpoint in this location that checkpoint will auto-resume.    
   - `base_output_directory`. This a base GCS path for storing artifacts generated during runs.
   - `dataset_path`. This is the GCS location of the C4 dataset. This should be a GCS URI up to but not including the `c4` folder.
+  - `steps`. The number of steps for this training run. If you do not set it the default (as defined in`` MaxText/configs/base.yml`) is 150,000.
 
 After updating the `configs/job-spec-patch.yaml` you can submit the job using the following command:
 
