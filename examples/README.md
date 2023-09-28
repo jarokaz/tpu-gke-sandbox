@@ -4,7 +4,7 @@ This folder contains examples of how to configure and run TPU training jobs usin
 - Using the Kubernetes **Job** resource to run single-slice TPU training jobs
 - Using the Kubernetes **JobSet** resource to run multi-slice TPU training jobs
 
-To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for a single-slice job and the `base_multi_slice_job_spec` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these **bases**. 
+To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for  single-slice jobs and the `base_multi_slice_job_spec` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these **bases**. 
 
 For example, the `maxtext_single_slice` contains patches to adapt the base **Job** configuration in `base_single_slice_job_spec`  to run pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
 
