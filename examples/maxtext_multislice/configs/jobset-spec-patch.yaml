@@ -15,4 +15,22 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-c4-pretrain-multi-slice-103 
+  name: multislice-job-maxtext-101 
+spec:
+  replicatedJobs:
+  - name: slice
+    replicas: 2
+    template:
+      spec:
+        parallelism: 2
+        template:
+          spec:
+            nodeSelector:
+              cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
+              cloud.google.com/gke-tpu-topology: 2x2x2
+              MultisliceGroupSize: "2"
+            containers:
+            - name: jax-tpu
+#              image: test
+
+

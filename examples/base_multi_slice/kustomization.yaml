@@ -17,6 +17,9 @@ kind: Kustomization
 
 namespace: tpu-training 
 
+openapi:
+  path: jobset_openapi_schema_map.json
+
 resources:
 - jobset.yaml
 

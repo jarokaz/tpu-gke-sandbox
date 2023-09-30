@@ -154,6 +154,30 @@ terraform apply \
 
 To add them later on, set `tpu_machine_type`, `tpu_topology`, and `num_tpu_pools` to reflect the desired TPU configuration and re-apply Terraform.
 
+
+### Installing JobSet CRD
+
+Multislice examples use `JobSet` CRD which is not installed by default.
+
+Get cluster credentials.
+
+```
+gcloud container clusters get-credentials $CLUSTER_NAME
+```
+
+Install `JobSet`
+
+```
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/jobset/releases/download/v0.2.1/manifests.yaml
+
+```
+
+Verify that the `JobSet` controller is running
+
+```
+kubectl get pods -n jobset-system
+```
+
 ### Clean up
 
 If you want to remove all the components provisioned in the environment you can execute the following command:
