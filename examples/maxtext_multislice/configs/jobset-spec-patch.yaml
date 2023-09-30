@@ -31,6 +31,10 @@ spec:
               MultisliceGroupSize: "2"
             containers:
             - name: jax-tpu
-#              image: test
+              command:
+              - bash
+              - -c
+              - |
+                echo Success
 
 
