@@ -4,9 +4,9 @@ This folder contains examples of how to configure and run TPU training jobs usin
 - Using the Kubernetes **Job** resource to run single-slice TPU training jobs
 - Using the Kubernetes **JobSet** resource to run multi-slice TPU training jobs
 
-To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice_job_spec` folder contains base configurations for  single-slice jobs and the `base_multi_slice_job_spec` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these [bases](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). 
+To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice` folder contains base configurations for  single-slice jobs and the `base_multi_slice` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these [bases](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). 
 
-For example, the `maxtext_single_slice` contains patches to adapt the base **Job** configuration in `base_single_slice_job_spec`  to run pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
+For example, the `maxtext` folder contains patches to adapt the base **Job** configuration in `base_single_slice`  to run pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
 
 Before running any examples, update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs configured in your environment. 
 
@@ -15,7 +15,7 @@ Before running any examples, update the `namespace` field in `kustomization.yaml
 
 The sample demonstrates how to configure and run a job that pretrains [1B parameter Maxtext LLM](https://github.com/google/maxtext) using the [C4 dataset](https://www.tensorflow.org/datasets/catalog/c4).
 
-This sample is located in the `maxtext_single_slice` folder. Make sure to execute all commands  from this folder.
+This sample is located in the `maxtext` folder. Make sure to execute all commands  from this folder.
 
 ### Get cluster credentials
 
@@ -94,6 +94,16 @@ You can also monitor the job using GCP Console.
 #### Monitoring training metrics using Vertex AI Tensorboard
 
 TBD
+
+
+## Example 2 - Running multi slice pretraining of Maxtext LLM
+
+The sample demonstrates how to configure and run a job that pretrains [xB parameter Maxtext LLM](https://github.com/google/maxtext)  [Cloud TPU Multislice](https://cloud.google.com/blog/products/compute/using-cloud-tpu-multislice-to-scale-ai-workloads).
+
+This sample is located in the `maxtext_multislice` folder. Make sure to execute all commands  from this folder.
+
+
+
 
 
 

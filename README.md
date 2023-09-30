@@ -112,7 +112,7 @@ export CLUSTER_NAME=jk-tpu-training-cluster
 export TPU_MACHINE_TYPE=ct4p-hightpu-4t
 export TPU_TOPOLOGY=2x2x2
 export TPU_NUM_NODES=2
-export NUM_TPU_POOLS=1
+export NUM_TPU_POOLS=2
 
 
 terraform apply \
