@@ -23,8 +23,18 @@ resource "google_storage_bucket" "artifact_repository" {
 }
 
 
-resource "google_storage_bucket_iam_member" "tpu_sa_repository_permissions" {
+#resource "google_storage_bucket_iam_member" "tpu_sa_repository_permissions" {
+#  bucket = google_storage_bucket.artifact_repository.name
+#  role = "roles/storage.legacyBucketReader"
+#  member = "serviceAccount:${module.tpu_workload_identity.gcp_service_account_email}"
+#}
+
+
+resource "google_storage_bucket_iam_binding" "bucket_permissions" {
   bucket = google_storage_bucket.artifact_repository.name
   role = "roles/storage.legacyBucketReader"
-  member = "serviceAccount:${module.tpu_workload_identity.gcp_service_account_email}"
+  members = [
+    "serviceAccount:${module.tpu_workload_identity.gcp_service_account_email}",
+    "serviceAccount:${google_service_account.gke_service_account.email}" 
+  ]
 }

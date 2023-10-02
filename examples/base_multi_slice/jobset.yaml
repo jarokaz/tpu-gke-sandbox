@@ -69,6 +69,9 @@ spec:
                 - containerPort: 8080 # Port for MXLA coordinator
                 securityContext:
                   privileged: true
+                env:
+                - name: LIBTPU_INIT_ARGS
+                  value: "--xla_tpu_enable_megascale_barrier=true"
                 command:
                 - bash
                 - -c

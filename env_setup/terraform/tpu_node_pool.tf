@@ -43,6 +43,10 @@ resource "google_container_node_pool" "tpu_node_pool" {
                 MultisliceGroup=var.multislice_group_name, 
                 MultisliceGroupSize=var.num_tpu_pools
               } : null)
+    service_account = google_service_account.gke_service_account.email
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
   }
 
   placement_policy {

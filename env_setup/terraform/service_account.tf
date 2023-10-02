@@ -12,24 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: single-slice-hellow-world-101
-spec:
-  parallelism: 2
-  template:
-    spec:
-      nodeSelector:
-        cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-        cloud.google.com/gke-tpu-topology: 2x2x2
-      serviceAccount: cloud-tpu-sa
-      containers:
-      - name: tpu-job 
-        image: gcr.io/jk-mlops-dev/maxtext-runner-image
-        command:
-         - python3 
-         - pedagogical_examples/shardings.py
-         - --ici_fsdp_parallelism=8
-         - --batch_size=131072
-         - --embedding_dimension=2048
+resource "google_service_account" "gke_service_account" {
+    account_id = var.gke_sa_name
+    display_name = "GKE node pool service account" 
+}
+
+resource "google_project_iam_member" "gke_sa_role_bindings" {
+  for_each = toset(var.gke_sa_roles)
+  project  = data.google_project.project.project_id
+  member   = "serviceAccount:${google_service_account.gke_service_account.email}"
+  role     = "roles/${each.value}"
+}

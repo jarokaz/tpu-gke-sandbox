@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: maxtext-c4-pretrain-105 
+  name: maxtext-single-slice-108
 spec:
   parallelism: 2
   template:
@@ -23,7 +23,7 @@ spec:
       nodeSelector:
         cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
         cloud.google.com/gke-tpu-topology: 2x2x2
-      serviceAccount: cloud-tpu-sa
+#      serviceAccount: cloud-tpu-sa
       containers:
       - name: tpu-job 
         image: gcr.io/jk-mlops-dev/maxtext-runner-image
@@ -31,7 +31,7 @@ spec:
         - python3
         - MaxText/train.py
         - MaxText/configs/base.yml 
-        - run_name=maxtext-c4-pretrain-105
-        - steps=200
+        - run_name=maxtext-single-slice-108
+        - steps=100
         - dataset_path=gs://jk-gke-aiml-repository/datasets
         - base_output_directory=gs://jk-gke-aiml-repository/runs 

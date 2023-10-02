@@ -39,7 +39,8 @@ module "gke" {
   network_policy             = false
   horizontal_pod_autoscaling = true
   filestore_csi_driver       = false
-  create_service_account     = true 
+  create_service_account     = false 
+  service_account            = google_service_account.gke_service_account.email
   grant_registry_access      = true  
   identity_namespace         = "${data.google_project.project.project_id}.svc.id.goog" 
 

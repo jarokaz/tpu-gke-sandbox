@@ -114,6 +114,18 @@ variable "tpu_sa_roles" {
     ] 
 }
 
+variable "gke_sa_name" {
+    description = "The service account name for GKE node pools"
+    default = "gke-sa"
+}
+
+variable "gke_sa_roles" {
+  description = "The roles to assign to the GKE service account"
+  default = [
+    "storage.objectAdmin",
+    ] 
+}
+
 variable "tpu_namespace" {
     description = "The K8s namespace for TPU workloads."
     default = "tpu-training"
