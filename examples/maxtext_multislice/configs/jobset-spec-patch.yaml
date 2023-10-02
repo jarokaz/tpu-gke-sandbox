@@ -15,13 +15,13 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-multislice-101
+  name: maxtext-multislice-105
 spec:
   failurePolicy:
     maxRestarts: 1
   replicatedJobs:
   - name: slice
-    replicas: 1
+    replicas: 2
     template:
       spec:
         parallelism: 2
@@ -31,7 +31,7 @@ spec:
               cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
               cloud.google.com/gke-tpu-topology: 2x2x2
               MultisliceGroupSize: "2"
-#            serviceAccount: cloud-tpu-sa
+            serviceAccount: cloud-tpu-sa
             containers:
             - name: jax-tpu
               image: gcr.io/jk-mlops-dev/maxtext-runner-image
@@ -39,8 +39,8 @@ spec:
               - python3 
               - MaxText/train.py
               - MaxText/configs/base.yml
-              - run_name=maxtext-multisclice-101
-              - steps=200 
+              - run_name=maxtext-multisclice-105
+              - steps=100 
               - dataset_path=gs://jk-gke-aiml-repository/datasets
               - base_output_directory=gs://jk-gke-aiml-repository/runs 
 #              - ici_fsdp_parallelism=8
