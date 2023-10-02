@@ -5,7 +5,7 @@ The samples in this folder use the [shardings.py](https://github.com/google/maxt
 The samples are **overlays** on top of the base **Job** and **JobSet** settings that execute the `shardings.py` script runs with different parallelism configurations.
 
 
-To run a given sample execute:
+To run a given sample update the sample's patch file(s) and execute:
 
 ```
 kubectl apply -k <sample_folder>
