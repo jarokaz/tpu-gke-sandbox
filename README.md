@@ -53,8 +53,10 @@ The Terraform configuration performs the following tasks:
 - Creates a node pool with nodes equipped with CPUs only.
 - Creates a specified number of multi-host TPU node pools.
 - Creates an IAM service account for Workload Identity.
-- Assigns a specified set of roles to the service account.
+- Assigns a specified set of roles to the Workload Identity service account.
 - Configures the cluster for Workload Identity.
+- Creates an IAM service account to be used as a custom service account for both CPU and TPU node pools
+- Assigns a specified set of roles to the custom node pool service account
 - Creates a Google Cloud Storage bucket.
 - Adds the service account to `roles/storage.legacyBucketReader` bucket level permissions.
 
@@ -79,6 +81,8 @@ The Terraform configuration supports the following input variables:
 | cpu_pool_disk_size | The disk size for noded in the CPU node pool | 200GB |
 | tpu_sa_name | The name of the service account that will be provisioned and used for Workload Identity | cloud-tpu-sa |
 | tpu_sa_roles | The roles to assign to the service account | roles/storage.objectAdmin |
+| gke_sa_name | The name of the custom service account for node pools | gke-sa |
+| gke_sa_roles | The roles to assigne to the custom service account for node pools | roles/storage.objectAdmin |
 | tpu_namespace | The K8s namespace for TPU workloads | tpu-training |
 | tpu_machine_type | The machine type for TPU node pools | ct4p-hightpu-4t |
 | tpu_topology | A topology of a TPU slice to provision | 2x2x2 |
@@ -88,7 +92,7 @@ The Terraform configuration supports the following input variables:
 | tpu_node_pool_name_prefix | A prefix that will be used to name TPU node pools. An index starting with 0 will be appended to the prefix to form a TPU node pool name | tpu-node-pool |
 | multislice_group_name | A name that will be used to label a TPU node pools to support multi-slice jobs | multi-slice-group |
 
-The Terraform is configured to maintain the configuration state in a Googel Cloud Storage. To intialize Terraform execute the following command from the `terraform` folder:
+The Terraform is configured to maintain the configuration state in  Google Cloud Storage. To intialize Terraform execute the following command from the `terraform` folder:
 
 ```
 TF_STATE_BUCKET=jk-mlops-dev-tf-state
