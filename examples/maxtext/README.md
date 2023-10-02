@@ -1,10 +1,10 @@
 # Maxtext examples
 
-This folder contains example  configurations for pretraining  [Maxtext LLM](https://github.com/google/maxtext) using [C4 Dataset](https://www.tensorflow.org/datasets/catalog/c4). 
+This folder contains examples of pretraining  [Maxtext LLM](https://github.com/google/maxtext) using [C4 Dataset](https://www.tensorflow.org/datasets/catalog/c4). 
 
-The `single_slice` folder is a Kustomize **overlay** over the **base** Job specification of a single slice training workload. The `multi_slice` folder is an **overlay** over the **base** JobSet specification of a multi-slice training workload.
+The `single_slice` folder is a Kustomize **overlay** over the **base** Job specification for a single slice training workload. The `multi_slice` folder is an **overlay** over the **base** JobSet specification for a multi-slice training workload.
 
-Before configuring and running Maxtext training jobs you need to need download the C4 dataset and build a training container image with the Maxtext code base.
+Before configuring and running **Maxtext** training jobs you need to need download the C4 dataset and build a training container image with the Maxtext code base.
 
 ## Download C4 Dataset
 
@@ -37,7 +37,18 @@ gcloud builds submit \
 
 ## Training parameters
 
+The Maxtext training loop is implemented in the [MaxText/train.py script](https://github.com/google/maxtext/blob/main/MaxText/train.py). The script accepts a number of command line parameters that control training settings. The first parameter is mandatory. It is a path to a YAML configuration file that contains model architecture and training regimen settings. The [MaxText/configs/base.yaml](https://github.com/google/maxtext/blob/main/MaxText/configs/base.yml) file contains the default settings. The other command line parameters are optional and can be used to overwrite settings in the YAML configuration file. You configure your training run by adapting a configuration file and/or providing command line overwrites.
 
+In our samples, we use the default [MaxText/configs/base.yaml](https://github.com/google/maxtext/blob/main/MaxText/configs/base.yml) and configure a given run through command line overwrites.
+
+For details on all configuration settings, refer to the [Maxtex repo](https://github.com/google/maxtext). Below, we provide a brief description of parameters used in the samples:
+  - `run_name`. This is an identifier of your run. It is used to locate and store artifacts (including checkpoints) generated during training. They will be stored in the `run_name` folder in the `base_output_directory` path (see below). If there is an existing checkpoint in this location that checkpoint will auto-resume.    
+  - `base_output_directory`. This a base GCS path for storing artifacts generated during runs.
+  - `dataset_path`. This is the GCS location of the C4 dataset. This should be a GCS URI up to but not including the `c4` folder.
+  - `steps`. The number of steps for this training run. If you do not set it the default (as defined in `MaxText/configs/base.yml`) is 150,000.
+  - `ici_fsdp_parallelism`. This parameter controls the ICI Fully Sharded Data Parallelism (FSDP) sharding strategy. For the Maxtext samples in this repo, it is recommended to set it to a number of chips in a TPU slice.
+  - `dcn_data_parallelism`. This parameter controls the DCN Data Parallelism (DP) sharding strategy. For the Maxtext samples in this repo, it is recommended to set it to a number of slices.
+  - The default settings `MaxText/configs/base.yml` configure a model with 16 decoder layers, 8 attention heads per layer, and 2560 model dimension. If you would like train a different model archicture adjust the following parameters: `base_emb_dim, base_num_heads, base_mlp_dim, base_num_decoder_layers, head_dim`:   
 
 ## Run a single slice training job
 
@@ -45,10 +56,7 @@ Modify the `single_slice/job-spec-patch.yaml` file to reflect your environment. 
 - Set the `metadata.name` field with to a unique job name. Although not mandatory, using a unique name for each job helps with managing multiple Job resources
 - Update the `spec.template.spec.containers[name=tpu-job].image` field with your training image name
 - Update the Maxtext trainer parameters defined in the `spec.template.spec.containers[name=tpu-job].command` field. For the detailed information on how to configure Maxtext training runs refer to [Maxtext github repo](https://github.com/google/maxtext/tree/main). At minimum, set the following parameters:
-  - `run_name`. This is an identifier of your run. It is used to locate and store artifacts (including checkpoints) generated during training. They will be stored in the `run_name` folder in the `base_output_directory` path (see below). If there is an existing checkpoint in this location that checkpoint will auto-resume.    
-  - `base_output_directory`. This a base GCS path for storing artifacts generated during runs.
-  - `dataset_path`. This is the GCS location of the C4 dataset. This should be a GCS URI up to but not including the `c4` folder.
-  - `steps`. The number of steps for this training run. If you do not set it the default (as defined in `MaxText/configs/base.yml`) is 150,000.
+
 
 After updating the `configs/job-spec-patch.yaml` you can submit the job using the following command:
 
