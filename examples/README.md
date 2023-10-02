@@ -8,9 +8,14 @@ To simplify the configuration of **Job** and **JobSet** resources, we use [Kusto
 
 For example, the `maxtext/single_slice` folder contains patches to adapt the base **Job** configuration in `base_single_slice`  to run pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
 
-Before running any examples, update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs configured in your environment. 
+## Update the base configurations
 
-Refer to a README file in the given sample's subfolder for the detailed instructions on how to run that sample.
+Before running any examples, you need to update the base configurations for Job and JobSet so they reflect your environment.
 
+- Update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs as configured in your environment.
+- Optional: Update `hostNetwork` and `dnsPolicy` in `base_multi_slice_job_spec/jobset.yaml`. Multislice training benefits from the most performance optimal inter-node network (DCN) configuration. The default settings for `hostNetwor` - `true` and `dnsPolicy` - `ClusterFirstWithHostNet` configure Kubernetes Pods to use the host network directly for VM to VM communication. This maximizes network performance but constraints some security controls. For example, Workload Identity cannot be used with this network configuration. If you want to turn off host networking remove these to settings from `base_multi_slice_job_spec/jobset.yaml`. 
+
+
+To run a specific sample follow instructions in the sample's README file.
 
 
