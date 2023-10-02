@@ -62,7 +62,7 @@ spec:
                 cloud.google.com/gke-tpu-topology: 2x2x2
                 MultisliceGroupSize: "4"
               containers:
-              - name: jax-tpu
+              - name: tpu-job 
                 image: python:3.8
                 ports:
                 - containerPort: 8471
