@@ -15,7 +15,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: maxtext-single-slice-108
+  name: maxtext-single-slice-201
 spec:
   parallelism: 2
   template:
@@ -31,7 +31,7 @@ spec:
         - python3
         - MaxText/train.py
         - MaxText/configs/base.yml 
-        - run_name=maxtext-single-slice-108
+        - run_name=maxtext-single-slice-201
         - steps=100
         - dataset_path=gs://jk-gke-aiml-repository/datasets
         - base_output_directory=gs://jk-gke-aiml-repository/runs 
