@@ -1,0 +1,210 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    batch.kubernetes.io/job-completion-index: "0"
+    jobset.sigs.k8s.io/job-index: "0"
+    jobset.sigs.k8s.io/jobset-name: maxtext-multislice-109
+    jobset.sigs.k8s.io/replicatedjob-name: slice
+    jobset.sigs.k8s.io/replicatedjob-replicas: "2"
+  creationTimestamp: "2023-10-02T20:09:58Z"
+  finalizers:
+  - batch.kubernetes.io/job-tracking
+  generateName: maxtext-multislice-109-slice-0-0-
+  labels:
+    batch.kubernetes.io/controller-uid: 0fe4d99a-f394-4635-bcb2-3fa955722372
+    batch.kubernetes.io/job-name: maxtext-multislice-109-slice-0
+    controller-uid: 0fe4d99a-f394-4635-bcb2-3fa955722372
+    job-name: maxtext-multislice-109-slice-0
+    jobset.sigs.k8s.io/job-index: "0"
+    jobset.sigs.k8s.io/job-key: aca7585a1a4e0636ca037cec81f635335e314662
+    jobset.sigs.k8s.io/jobset-name: maxtext-multislice-109
+    jobset.sigs.k8s.io/replicatedjob-name: slice
+    jobset.sigs.k8s.io/replicatedjob-replicas: "2"
+    jobset.sigs.k8s.io/restart-attempt: "0"
+  name: maxtext-multislice-109-slice-0-0-tdzzz
+  namespace: tpu-training
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: maxtext-multislice-109-slice-0
+    uid: 0fe4d99a-f394-4635-bcb2-3fa955722372
+  resourceVersion: "3172743"
+  uid: c0e0ff6b-b26c-43eb-a168-d2fb8fcd43b2
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: jobset.sigs.k8s.io/jobset-name
+            operator: In
+            values:
+            - maxtext-multislice-109
+        topologyKey: MultisliceGroup
+      - labelSelector:
+          matchExpressions:
+          - key: jobset.sigs.k8s.io/job-key
+            operator: In
+            values:
+            - aca7585a1a4e0636ca037cec81f635335e314662
+        namespaceSelector: {}
+        topologyKey: cloud.google.com/gke-nodepool
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: jobset.sigs.k8s.io/jobset-name
+            operator: NotIn
+            values:
+            - maxtext-multislice-109
+        namespaceSelector:
+          matchExpressions:
+          - key: jobset.sigs.k8s.io/jobset-name
+            operator: Exists
+        topologyKey: MultisliceGroup
+      - labelSelector:
+          matchExpressions:
+          - key: jobset.sigs.k8s.io/job-key
+            operator: Exists
+          - key: jobset.sigs.k8s.io/job-key
+            operator: NotIn
+            values:
+            - aca7585a1a4e0636ca037cec81f635335e314662
+        namespaceSelector: {}
+        topologyKey: cloud.google.com/gke-nodepool
+  containers:
+  - command:
+    - python3
+    - MaxText/train.py
+    - MaxText/configs/base.yml
+    - run_name=maxtext-multisclice-109
+    - steps=200
+    - dataset_path=gs://jk-gke-aiml-repository/datasets
+    - base_output_directory=gs://jk-gke-aiml-repository/runs
+    - ici_fsdp_parallelism=8
+    - dcn_data_parallelism=2
+    - per_device_batch_size=16
+    - enable_profiler=true
+    - remat_policy=full
+    - base_emb_dim=2560
+    - base_num_heads=8
+    - base_mlp_dim=8192
+    - base_num_decoder_layers=16
+    - head_dim=256
+    env:
+    - name: LIBTPU_INIT_ARGS
+      value: --xla_tpu_enable_megascale_barrier=true
+    - name: TPU_WORKER_HOSTNAMES
+      value: maxtext-multislice-109-slice-0-0.maxtext-multislice-109,maxtext-multislice-109-slice-0-1.maxtext-multislice-109
+    - name: TPU_WORKER_ID
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+    - name: MEGASCALE_COORDINATOR_ADDRESS
+      value: maxtext-multislice-109-slice-0-0.maxtext-multislice-109
+    - name: MEGASCALE_NUM_SLICES
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations['jobset.sigs.k8s.io/replicatedjob-replicas']
+    - name: MEGASCALE_SLICE_ID
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations['jobset.sigs.k8s.io/job-index']
+    - name: JOB_COMPLETION_INDEX
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+    image: gcr.io/jk-mlops-dev/maxtext-runner-image
+    imagePullPolicy: Always
+    name: jax-tpu
+    ports:
+    - containerPort: 8471
+      hostPort: 8471
+      protocol: TCP
+    - containerPort: 8080
+      hostPort: 8080
+      protocol: TCP
+    resources:
+      limits:
+        google.com/tpu: "4"
+      requests:
+        google.com/tpu: "4"
+    securityContext:
+      privileged: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+  dnsPolicy: ClusterFirstWithHostNet
+  enableServiceLinks: true
+  hostNetwork: true
+  hostname: maxtext-multislice-109-slice-0-0
+  nodeName: gke-tpu-8a5764c2-ktv5
+  nodeSelector:
+    MultisliceGroupSize: "2"
+    cloud.google.com/gke-accelerator-count: "4"
+    cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
+    cloud.google.com/gke-tpu-topology: 2x2x2
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: OnFailure
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: cloud-tpu-sa
+  serviceAccountName: cloud-tpu-sa
+  subdomain: maxtext-multislice-109
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoSchedule
+    key: google.com/tpu
+    operator: Exists
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-10-02T20:09:59Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-10-02T20:10:00Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-10-02T20:10:00Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-10-02T20:09:58Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://c3e6d34808f9fcad83585c899a3a2649d35db7476db194a53aa2e65a414a2880
+    image: gcr.io/jk-mlops-dev/maxtext-runner-image:latest
+    imageID: gcr.io/jk-mlops-dev/maxtext-runner-image@sha256:53d1868c2a7e3f17e5724060e193224d3e4cf4cf46139c1935a052304b623376
+    lastState: {}
+    name: jax-tpu
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-10-02T20:09:59Z"
+  hostIP: 10.129.0.58
+  phase: Running
+  podIP: 10.129.0.58
+  podIPs:
+  - ip: 10.129.0.58
+  qosClass: BestEffort
+  startTime: "2023-10-02T20:09:59Z"
