@@ -48,7 +48,7 @@ For details on all configuration settings, refer to the [Maxtex repo](https://gi
   - `steps`. The number of steps for this training run. If you do not set it, the default (as defined in `MaxText/configs/base.yml`) is 150,000.
   - `ici_fsdp_parallelism`. This parameter controls the ICI Fully Sharded Data Parallelism (FSDP) sharding strategy. For the Maxtext samples in this repo, it is recommended to set it to a number of chips in a TPU slice.
   - `dcn_data_parallelism`. This parameter controls the DCN Data Parallelism (DP) sharding strategy. For the Maxtext samples in this repo, it is recommended to set it to a number of slices.
-  - The defaults in `MaxText/configs/base.yml` configure a model with 16 decoder layers, 8 attention heads per layer, and 2560 model dimension. If you would like train a different model archicture adjust the following parameters: `base_emb_dim, base_num_heads, base_mlp_dim, base_num_decoder_layers, head_dim`:   
+  - The defaults in `MaxText/configs/base.yml` configure a model with 16 decoder layers, 8 attention heads per layer, and 2560 model dimension. If you would like to use a different model archicture adjust the following parameters: `base_emb_dim, base_num_heads, base_mlp_dim, base_num_decoder_layers, head_dim`:   
 
 ## Run a single-slice training job
 
@@ -86,7 +86,7 @@ You can also monitor the job using GCP Console.
 
 ## Run a multi-slice training job
 
-If you want to run a multi-slice training job you need two TPU slices - a cluster provisioned with two multi-host TPU node pools.
+If you want to run a multi-slice training job you need at least two TPU slices - a cluster provisioned with at least two multi-host TPU node pools.
 
 Modify the `multi_slice/jobset-spec-patch.yaml` file to reflect your environment:
 - `metadata.name` - a unique job set name.
@@ -124,6 +124,6 @@ kubectl logs <YOUR POD ID> -n <YOUR TPU TRAINING NAMESPACE>
 You can also monitor the job using GCP Console.
 
 
-#### Monitoring training metrics using  Tensorboard
+## Monitoring training runs using  Tensorboard
 
 TBD
