@@ -31,7 +31,7 @@ spec:
               MultisliceGroupSize: "2"
             serviceAccount: cloud-tpu-sa
             containers:
-            - name: jax-tpu
+            - name: tpu-job 
               image: gcr.io/jk-mlops-dev/maxtext-runner-image
               command:
               - python3 
