@@ -15,7 +15,7 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-multislice-108
+  name: maxtext-multislice-109
 spec:
   failurePolicy:
     maxRestarts: 1
@@ -39,20 +39,20 @@ spec:
               - python3 
               - MaxText/train.py
               - MaxText/configs/base.yml
-              - run_name=maxtext-multisclice-108
-              - steps=100 
+              - run_name=maxtext-multisclice-109
+              - steps=200 
               - dataset_path=gs://jk-gke-aiml-repository/datasets
               - base_output_directory=gs://jk-gke-aiml-repository/runs 
-#              - ici_fsdp_parallelism=8
-#              - dcn_data_parallelism=2
-#              - per_device_batch_size=16
-#              - enable_profiler=true
-#              - remat_policy=full
-#              - base_emb_dim=2560
-#              - base_num_heads=8
-#              - base_mlp_dim=8192
-#              - base_num_decoder_layers=16
-#              - head_dim=256
+              - ici_fsdp_parallelism=8
+              - dcn_data_parallelism=2
+              - per_device_batch_size=16
+              - enable_profiler=true
+              - remat_policy=full
+              - base_emb_dim=2560
+              - base_num_heads=8
+              - base_mlp_dim=8192
+              - base_num_decoder_layers=16
+              - head_dim=256
 
 
 
