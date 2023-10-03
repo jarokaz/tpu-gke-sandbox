@@ -172,7 +172,9 @@ gcloud container clusters get-credentials $CLUSTER_NAME
 Install `JobSet`
 
 ```
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/jobset/releases/download/v0.2.1/manifests.yaml
+JOBSET_API_VERSION="v0.2.3"
+
+kubectl apply --server-side -f "https://github.com/kubernetes-sigs/jobset/releases/download/$JOBSET_API_VERSION/manifests.yaml"
 
 ```
 
@@ -180,7 +182,22 @@ Verify that the `JobSet` controller is running
 
 ```
 kubectl get pods -n jobset-system
+
 ```
+
+### Installing Kueue
+
+We use [Kueue](https://kueue.sigs.k8s.io/) for training job scheduling and coordination.
+
+```
+KUEUE_API_VERSION=v0.4.1
+kubectl apply -f "https://github.com/kubernetes-sigs/kueue/releases/download/$KUEUE_API_VERSION/manifests.yaml"
+
+```
+
+#### Configuring Kueue
+
+
 
 ### Clean up
 
