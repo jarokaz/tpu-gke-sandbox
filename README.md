@@ -197,7 +197,7 @@ kubectl apply -f "https://github.com/kubernetes-sigs/kueue/releases/download/$KU
 
 #### Configuring Kueue
 
-
+TBD
 
 ### Clean up
 
