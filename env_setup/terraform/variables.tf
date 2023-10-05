@@ -111,6 +111,7 @@ variable "tpu_sa_roles" {
   description = "The roles to assign to the TPU service account"
   default = [
     "roles/storage.objectAdmin",
+    "roles/logging.logWriter",
     ] 
 }
 
@@ -123,6 +124,7 @@ variable "gke_sa_roles" {
   description = "The roles to assign to the GKE service account"
   default = [
     "storage.objectAdmin",
+    "logging.logWriter",
     ] 
 }
 

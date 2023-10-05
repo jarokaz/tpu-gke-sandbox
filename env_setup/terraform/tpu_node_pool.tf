@@ -45,7 +45,9 @@ resource "google_container_node_pool" "tpu_node_pool" {
               } : null)
     service_account = google_service_account.gke_service_account.email
     oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
     ]
   }
 

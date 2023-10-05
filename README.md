@@ -80,9 +80,9 @@ The Terraform configuration supports the following input variables:
 | cpu_pool_disk_type | The disk type for nodes in the CPU node pool | pd-standard|
 | cpu_pool_disk_size | The disk size for noded in the CPU node pool | 200GB |
 | tpu_sa_name | The name of the service account that will be provisioned and used for Workload Identity | cloud-tpu-sa |
-| tpu_sa_roles | The roles to assign to the service account | roles/storage.objectAdmin |
+| tpu_sa_roles | The roles to assign to the service account | roles/storage.objectAdmin, roles/logging.logWriter |
 | gke_sa_name | The name of the custom service account for node pools | gke-sa |
-| gke_sa_roles | The roles to assigne to the custom service account for node pools | roles/storage.objectAdmin |
+| gke_sa_roles | The roles to assigne to the custom service account for node pools | roles/storage.objectAdmin, roles/logging.logWriter |
 | tpu_namespace | The K8s namespace for TPU workloads | tpu-training |
 | tpu_machine_type | The machine type for TPU node pools | ct4p-hightpu-4t |
 | tpu_topology | A topology of a TPU slice to provision | 2x2x2 |

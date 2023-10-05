@@ -44,7 +44,7 @@ module "gke" {
   grant_registry_access      = true  
   identity_namespace         = "${data.google_project.project.project_id}.svc.id.goog" 
 
-  monitoring_enable_managed_prometheus = false 
+  logging_enabled_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
   
   cluster_resource_labels = { "mesh_id" : "proj-${data.google_project.project.number}" }
 
