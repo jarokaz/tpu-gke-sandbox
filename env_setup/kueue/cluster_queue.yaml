@@ -22,7 +22,7 @@ spec:
   resourceGroups:
   - coveredResources: ["google.com/tpu"]
     flavors:
-    - name: tpu-slice
+    - name: v4-16 
       resources:
       - name: "google.com/tpu"
-        nominalQuota: 8 
+        nominalQuota: 16 

@@ -197,7 +197,11 @@ kubectl apply -f "https://github.com/kubernetes-sigs/kueue/releases/download/$KU
 
 #### Configuring Kueue
 
-TBD
+Set the `namespace` field in  `kueue/local_queue.yaml` to your namespace
+
+```
+kubectl apply -k kueue
+```
 
 ### Clean up
 

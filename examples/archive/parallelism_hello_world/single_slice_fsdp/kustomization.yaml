@@ -15,30 +15,38 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-#openapi:
-#  path: jobset_openapi_schema_map.json 
-
 resources:
-- ../../base_jobset
+- ../../base_single_slice 
  
 patches:
-- path: jobset-spec-patch.yaml
+- path: job-spec-patch.yaml
   target:
-    kind: JobSet
+    kind: Job
   options:
     allowNameChange: true
 
-
 replacements:
 - source:
-    kind: JobSet
-    version: v1alpha2
-    fieldPath: spec.replicatedJobs.0.template.spec.parallelism
+    kind: Job
+    version: v1
   targets:
   - select:
-      kind: JobSet
-      version: v1alpha2
+      kind: Service
+      version: v1
     fieldPaths:
-    - spec.replicatedJobs.0.template.spec.completions
-
-
+    - spec.selector.job-name
+  - select:
+      kind: Job
+      version: v1
+    fieldPaths:
+    - spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution.0.labelSelector.matchExpressions.0.values.0
+- source:
+    kind: Job
+    version: v1
+    fieldPath: spec.parallelism
+  targets:
+  - select: 
+      kind: Job
+      version: v1
+    fieldPaths:
+    - spec.completions

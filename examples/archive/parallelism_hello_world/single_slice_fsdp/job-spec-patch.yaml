@@ -12,10 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: kueue.x-k8s.io/v1beta1
-kind: LocalQueue
+apiVersion: batch/v1
+kind: Job
 metadata:
-  namespace: tpu-training 
-  name: multislice-queue
+  name: single-slice-hellow-world-101
 spec:
-  clusterQueue: cluster-queue
+  parallelism: 2
+  template:
+    spec:
+      nodeSelector:
+        cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
+        cloud.google.com/gke-tpu-topology: 2x2x2
+      serviceAccount: cloud-tpu-sa
+      containers:
+      - name: tpu-job 
+        image: gcr.io/jk-mlops-dev/maxtext-runner-image
+        command:
+         - python3 
+         - pedagogical_examples/shardings.py
+         - --ici_fsdp_parallelism=8
+         - --batch_size=131072
+         - --embedding_dimension=2048

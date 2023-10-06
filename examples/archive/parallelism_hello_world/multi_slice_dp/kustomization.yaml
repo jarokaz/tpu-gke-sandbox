@@ -19,7 +19,7 @@ kind: Kustomization
 #  path: jobset_openapi_schema_map.json 
 
 resources:
-- ../../base_jobset
+- ../../base_multi_slice 
  
 patches:
 - path: jobset-spec-patch.yaml
@@ -30,6 +30,16 @@ patches:
 
 
 replacements:
+- source:
+    kind: JobSet
+    version: v1alpha2
+  targets:
+  - select:
+      kind: JobSet
+      version: v1alpha2
+    fieldPaths:
+      - spec.replicatedJobs.0.template.spec.template.spec.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution.0.labelSelector.matchExpressions.0.values.0
+      - spec.replicatedJobs.0.template.spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution.0.labelSelector.matchExpressions.0.values.0
 - source:
     kind: JobSet
     version: v1alpha2

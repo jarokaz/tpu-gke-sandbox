@@ -15,7 +15,7 @@
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: ResourceFlavor
 metadata:
-  name: tpu-slice
+  name: v4-16 
 spec:
   nodeLabels:
     cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
