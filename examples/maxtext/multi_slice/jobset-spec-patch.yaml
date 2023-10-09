@@ -15,13 +15,11 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-multislice-405
+  name: maxtext-multislice-503
 spec:
-  failurePolicy:
-    maxRestarts: 0
   replicatedJobs:
   - name: slice
-    replicas: 1
+    replicas: 2
     template:
       spec:
         parallelism: 2
@@ -38,7 +36,6 @@ spec:
               - python3 
               - MaxText/train.py
               - MaxText/configs/base.yml
-              - run_name=maxtext-multisclice-405
               - steps=400 
               - dataset_path=gs://jk-gke-aiml-repository/datasets
               - base_output_directory=gs://jk-gke-aiml-repository/runs 

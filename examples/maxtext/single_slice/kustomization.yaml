@@ -33,6 +33,15 @@ replacements:
 - source:
     kind: JobSet
     version: v1alpha2
+  targets:
+  - select:
+      kind: JobSet 
+      version: v1alpha2
+    fieldPaths:
+    - spec.replicatedJobs.0.template.spec.template.spec.containers.[name=tpu-job].env.0.value
+- source:
+    kind: JobSet
+    version: v1alpha2
     fieldPath: spec.replicatedJobs.0.template.spec.parallelism
   targets:
   - select:

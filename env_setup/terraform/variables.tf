@@ -23,6 +23,11 @@ variable "region" {
     type        = string
 }
 
+variable "tensorboard_region" {
+    description = "The region for a Vertex Tensorboard instance "
+    default     = "us-central1" 
+}
+
 variable "zone" {
     description = "Cluster zone"
     type        = string
@@ -112,6 +117,7 @@ variable "tpu_sa_roles" {
   default = [
     "roles/storage.objectAdmin",
     "roles/logging.logWriter",
+    "roles/aiplatform.user",
     ] 
 }
 
@@ -125,6 +131,7 @@ variable "gke_sa_roles" {
   default = [
     "storage.objectAdmin",
     "logging.logWriter",
+    "aiplatform.user",
     ] 
 }
 
