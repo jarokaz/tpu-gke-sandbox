@@ -16,7 +16,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: tb-1 
-  namespace: tpu-training 
 spec:
   backoffLimit: 0
   completions: 1
@@ -33,8 +32,6 @@ spec:
         image: gcr.io/jk-mlops-dev/tb-uploader
         command:
         - tb-gcp-uploader
-#        resources:
-#          requests:
-#            google.com/tpu: 4
-#          limits:
-#            google.com/tpu: 4
+        - --logdir=gs://jk-gke-aiml-repository/runs/maxtext-singleslice-512/tensorboard
+        - --tensorboard_resource_name=projects/895222332033/locations/us-central1/tensorboards/1035537643225481216
+        - --experiment_name=maxtext-singleslice-512
