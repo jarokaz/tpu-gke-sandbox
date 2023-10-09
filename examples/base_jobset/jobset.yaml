@@ -22,6 +22,10 @@ metadata:
   annotations:
     alpha.jobset.sigs.k8s.io/exclusive-topology: cloud.google.com/gke-nodepool # 1:1 job replica to node pool assignment
 spec:
+  successPolicy:
+    operator: All
+    targetReplicatedJobs:
+    - slice
   failurePolicy:
     maxRestarts: 3  # The set will be restarted on failures up to 4 times.
   replicatedJobs:
@@ -61,4 +65,17 @@ spec:
                 resources:
                   limits:
                     google.com/tpu: 4 # Number of Cloud TPU VMs per worker
-   
+    - name: tensorboard    
+      replicas: 1    
+      template:
+        spec:
+          parallelism: 1   
+          completions: 1   
+          backoffLimit: 0   
+          template:
+            spec:
+              containers:
+              - name: tb-uploader 
+                image: gcr.io/jk-mlops-dev/tb-uploader
+                command:
+                - tb-gcp-uploader

@@ -15,7 +15,7 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-singleslice-510
+  name: maxtext-singleslice-513
 spec:
   replicatedJobs:
   - name: slice
@@ -35,30 +35,21 @@ spec:
               - python3 
               - MaxText/train.py
               - MaxText/configs/base.yml
-              - steps=400 
+              - steps=500 
               - dataset_path=gs://jk-gke-aiml-repository/datasets
               - base_output_directory=gs://jk-gke-aiml-repository/runs 
   - name: tensorboard 
-    replicas: 1
     template:
       spec:
-        parallelism: 1
-        completions: 1
-        backoffLimit: 0
         template:
           spec:
-            nodeSelector:
-#              cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-#              cloud.google.com/gke-tpu-topology: 2x2x2
+            serviceAccountName: cloud-tpu-sa
             containers:
             - name: tb-uploader 
-              image: gcr.io/jk-mlops-dev/tb-uploader
-              command:
-              - tb-gcp-uploader
               args:
               - --tensorboard_resource_name=projects/895222332033/locations/us-central1/tensorboards/1035537643225481216
-              - --logdir=gs://jk-gke-aiml-repository/runs/maxtext-singleslice-510/tensorboard
-              - --experiment_name=maxtext-singleslice-510
+              - --logdir=gs://jk-gke-aiml-repository/runs/maxtext-singleslice-513/tensorboard
+              - --experiment_name=maxtext-singleslice-513
 
 
  

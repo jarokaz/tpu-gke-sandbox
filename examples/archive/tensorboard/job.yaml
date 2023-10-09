@@ -16,6 +16,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: tb-1 
+  namespace: tpu-training
 spec:
   backoffLimit: 0
   completions: 1
@@ -23,10 +24,11 @@ spec:
   template:
     spec:
       restartPolicy: Never
+      serviceAccountName: cloud-tpu-sa
       nodeSelector:
         #cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
         #cloud.google.com/gke-tpu-topology: 2x2x2
-        #iam.gke.io/gke-metadata-server-enabled: "true"
+#        iam.gke.io/gke-metadata-server-enabled: "true"
       containers:
       - name: tb-uploader
         image: gcr.io/jk-mlops-dev/tb-uploader
