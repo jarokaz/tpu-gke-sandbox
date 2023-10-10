@@ -16,7 +16,7 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: multislice-job  # JobSet name (${JOBSET_NAME})
+  name: tpu-training-job  
   labels:
     kueue.x-k8s.io/queue-name: multislice-queue
   annotations:
@@ -27,7 +27,7 @@ spec:
     targetReplicatedJobs:
     - slice
   failurePolicy:
-    maxRestarts: 3  # The set will be restarted on failures up to 4 times.
+    maxRestarts: 1  
   replicatedJobs:
     - name: slice    # Part of the name of the child Jobs (<replicateJobName>)
       replicas: 1    # Number of slices
@@ -52,8 +52,6 @@ spec:
                 securityContext:
                   privileged: true
                 env:
-                - name: JOBSET_NAME
-                  value: run-name-999
                 - name: LIBTPU_INIT_ARGS
                   value: "--xla_tpu_enable_megascale_barrier=true"
                 command:
@@ -65,17 +63,3 @@ spec:
                 resources:
                   limits:
                     google.com/tpu: 4 # Number of Cloud TPU VMs per worker
-    - name: tensorboard    
-      replicas: 1    
-      template:
-        spec:
-          parallelism: 1   
-          completions: 1   
-          backoffLimit: 0   
-          template:
-            spec:
-              containers:
-              - name: tb-uploader 
-                image: gcr.io/jk-mlops-dev/tb-uploader
-                command:
-                - tb-gcp-uploader

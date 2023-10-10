@@ -15,29 +15,29 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-singleslice-513
+  name: maxtext-singleslice-
 spec:
   replicatedJobs:
   - name: slice
     replicas: 1
     template:
       spec:
-        parallelism: 2
         template:
           spec:
-            nodeSelector:
-              cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-              cloud.google.com/gke-tpu-topology: 2x2x2
             containers:
             - name: tpu-job 
               image: gcr.io/jk-mlops-dev/maxtext-runner-image
+              envFrom:
+              - configMapRef:
+                  name: maxtext-parameters
               command:
               - python3 
               - MaxText/train.py
               - MaxText/configs/base.yml
-              - steps=500 
-              - dataset_path=gs://jk-gke-aiml-repository/datasets
-              - base_output_directory=gs://jk-gke-aiml-repository/runs 
+              - run_name=$(RUN_NAME)
+              - steps=$(STEPS)
+              - dataset_path=$(DATASET_PATH)
+              - base_output_directory=$(BASE_OUTPUT_DIRECTORY)
   - name: tensorboard 
     template:
       spec:
@@ -46,11 +46,16 @@ spec:
             serviceAccountName: cloud-tpu-sa
             containers:
             - name: tb-uploader 
+              image: gcr.io/jk-mlops-dev/tb-uploader
+              command:
+              - tb-gcp-uploader
               args:
-              - --tensorboard_resource_name=projects/895222332033/locations/us-central1/tensorboards/1035537643225481216
-              - --logdir=gs://jk-gke-aiml-repository/runs/maxtext-singleslice-513/tensorboard
-              - --experiment_name=maxtext-singleslice-513
-
+              - --tensorboard_resource_name=$(TENSORBOARD_NAME)
+              - --logdir=$(BASE_OUTPUT_DIRECTORY)/$(RUN_NAME)/tensorboard
+              - --experiment_name=$(RUN_NAME)
+              envFrom:
+              - configMapRef:
+                  name: maxtext-parameters
 
  
 

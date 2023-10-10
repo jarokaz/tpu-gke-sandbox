@@ -15,6 +15,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: tpu-training
+nameSuffix: "101"
+
+configMapGenerator:
+- name: maxtext-parameters
+  literals:
+  - RUN_NAME=maxtext-1003
+  - STEPS=500
+  - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
+  - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
+  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/1035537643225481216
+
 resources:
 - ../../base_jobset
  
@@ -25,25 +37,7 @@ patches:
   options:
     allowNameChange: true
 
-replacements:
-- source:
-    kind: JobSet
-    version: v1alpha2
-  targets:
-  - select:
-      kind: JobSet 
-      version: v1alpha2
-    fieldPaths:
-    - spec.replicatedJobs.0.template.spec.template.spec.containers.[name=tpu-job].env.0.value
-- source:
-    kind: JobSet
-    version: v1alpha2
-    fieldPath: spec.replicatedJobs.0.template.spec.parallelism
-  targets:
-  - select:
-      kind: JobSet
-      version: v1alpha2
-    fieldPaths:
-    - spec.replicatedJobs.0.template.spec.completions
+
+
 
 
