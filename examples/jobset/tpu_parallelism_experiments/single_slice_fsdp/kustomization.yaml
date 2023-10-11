@@ -12,24 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: single-slice-hellow-world-101
-spec:
-  parallelism: 2
-  template:
-    spec:
-      nodeSelector:
-        cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-        cloud.google.com/gke-tpu-topology: 2x2x2
-      serviceAccount: cloud-tpu-sa
-      containers:
-      - name: tpu-job 
-        image: gcr.io/jk-mlops-dev/maxtext-runner-image
-        command:
-         - python3 
-         - pedagogical_examples/shardings.py
-         - --ici_fsdp_parallelism=8
-         - --batch_size=131072
-         - --embedding_dimension=2048
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+resources:
+- ../../base_jobset
+ 
+patches:
+- path: jobset-spec-patch.yaml
+  target:
+    kind: JobSet
+  options:
+    allowNameChange: true
