@@ -15,7 +15,7 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: multi-slice-hello-world-2 
+  name: helloworld-multislice 
 spec:
   replicatedJobs:
   - name: slice

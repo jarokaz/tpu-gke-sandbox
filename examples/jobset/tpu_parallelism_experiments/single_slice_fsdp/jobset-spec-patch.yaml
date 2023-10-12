@@ -16,7 +16,7 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: helloworld-singleslice-
+  name: helloworld-singleslice
 spec:
   replicatedJobs:
   - name: slice
@@ -28,9 +28,9 @@ spec:
             nodeSelector:
               cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
               cloud.google.com/gke-tpu-topology: 2x2x2             
-            image: gcr.io/jk-mlops-dev/maxtext-runner-image
             containers:
             - name: tpu-job 
+              image: gcr.io/jk-mlops-dev/maxtext-runner-image
               command:
               - python3 
               - pedagogical_examples/shardings.py
