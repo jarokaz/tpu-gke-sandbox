@@ -190,7 +190,7 @@ kubectl get pods -n jobset-system
 We use [Kueue](https://kueue.sigs.k8s.io/) for training job scheduling and coordination.
 
 ```
-KUEUE_API_VERSION=v0.4.1
+KUEUE_API_VERSION=v0.4.2
 kubectl apply -f "https://github.com/kubernetes-sigs/kueue/releases/download/$KUEUE_API_VERSION/manifests.yaml"
 
 ```

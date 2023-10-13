@@ -15,6 +15,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: tpu-training
+
 openapi:
   path: jobset_openapi_schema_map.json
 

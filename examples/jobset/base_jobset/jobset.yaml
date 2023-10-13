@@ -16,7 +16,6 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: tpu-training-job  
   labels:
     kueue.x-k8s.io/queue-name: tpu-job-queue 
   annotations:
