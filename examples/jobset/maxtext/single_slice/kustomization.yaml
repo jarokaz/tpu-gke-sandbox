@@ -16,12 +16,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: tpu-training
-nameSuffix: "101"
+nameSuffix: "901"
 
 configMapGenerator:
 - name: maxtext-parameters
   literals:
-  - RUN_NAME=maxtext-1003
+  - RUN_NAME=maxtext-901
   - STEPS=500
   - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
   - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
