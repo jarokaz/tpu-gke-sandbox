@@ -16,6 +16,8 @@
 # google_client_config and kubernetes provider must be explicitly specified like the following.
 data "google_client_config" "default" {}
 
+
+
 provider "kubernetes" {
   host                   = "https://${module.gke.endpoint}"
   token                  = data.google_client_config.default.access_token
@@ -28,7 +30,7 @@ module "gke" {
   name                       = var.cluster_name
   release_channel            = var.gke_release_channel
   kubernetes_version         = var.gke_version
-  regional                   = false
+  region                     = var.region
   zones                      = [var.zone]
   network                    = google_compute_network.cluster_network.name
   subnetwork                 = google_compute_subnetwork.cluster_subnetwork.name
@@ -43,10 +45,7 @@ module "gke" {
   service_account            = google_service_account.gke_service_account.email
   grant_registry_access      = true  
   identity_namespace         = "${data.google_project.project.project_id}.svc.id.goog" 
-
   logging_enabled_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
-  
-  cluster_resource_labels = { "mesh_id" : "proj-${data.google_project.project.number}" }
 
   node_pools = [
     {

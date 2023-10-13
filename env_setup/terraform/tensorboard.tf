@@ -14,7 +14,7 @@
 
 
 resource "google_vertex_ai_tensorboard" "tensorboard" {
-  display_name = "TPU training"
+  display_name = var.tensorboard_name 
   description  = "Vertex Tensorboard to track TPU training experiments"
   labels       = {
     "environment" : "gke_tpu",

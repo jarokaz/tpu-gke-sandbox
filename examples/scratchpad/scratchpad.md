@@ -11,3 +11,8 @@ gcloud container node-pools update tpu-node-pool-1 \
     --workload-metadata=$METADATA
 ```
 
+
+
+gcloud container clusters create jk-gke-test1 \
+--region us-central2 \
+--scopes=storage-full,gke-default

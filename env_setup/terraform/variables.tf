@@ -19,7 +19,7 @@ variable "project_id" {
 }
 
 variable "region" {
-    description = "The region for the environment resources"
+    description = "The region for a GKE cluster and a GCS bucket"
     type        = string
 }
 
@@ -28,8 +28,13 @@ variable "tensorboard_region" {
     default     = "us-central1" 
 }
 
+variable "tensorboard_name" {
+    description = "The Tensorboard instance display name"
+    default     = "TPU on GKE training experiments" 
+}
+
 variable "zone" {
-    description = "Cluster zone"
+    description = "The  zone for GKE node pools"
     type        = string
 }
 
@@ -73,6 +78,11 @@ variable "services_ip_range" {
 variable "cluster_name" {
     description = "The name of the GKE cluster"
     type        = string
+}
+
+variable "gke_release_channel" {
+    description = "GKE release channel"
+    default = "STABLE"
 }
 
 variable "gke_version" {
@@ -145,11 +155,6 @@ variable "max_pods_per_node" {
     default     = 110 
 }
 
-
-variable "gke_release_channel" {
-    description = "GKE release channel"
-    default = "STABLE"
-}
 
 variable "tpu_machine_type" {
     description = "TPU machine type"

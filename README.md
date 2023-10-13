@@ -96,7 +96,7 @@ The Terraform is configured to maintain the configuration state in  Google Cloud
 
 ```
 TF_STATE_BUCKET=jk-mlops-dev-tf-state
-TF_STATE_PREFIX=gke-tpu-training
+TF_STATE_PREFIX=gke-tpu-training-environment
 
 terraform init \
 -backend-config="bucket=$TF_STATE_BUCKET" \
