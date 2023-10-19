@@ -117,6 +117,7 @@ export TPU_MACHINE_TYPE=ct4p-hightpu-4t
 export TPU_TOPOLOGY=2x2x2
 export TPU_NUM_NODES=2
 export NUM_TPU_POOLS=2
+export FORCE_DESTROY=true
 
 
 terraform apply \
@@ -126,6 +127,7 @@ terraform apply \
 -var=subnet_name=$SUBNET_NAME \
 -var=cluster_name=$CLUSTER_NAME \
 -var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=force_destroy=$FORCE_DESTROY \
 -var=tpu_machine_type=$TPU_MACHINE_TYPE \
 -var=tpu_topology=$TPU_TOPOLOGY \
 -var=tpu_num_nodes=$TPU_NUM_NODES \
@@ -149,6 +151,7 @@ terraform apply \
 -var=subnet_name=$SUBNET_NAME \
 -var=cluster_name=$CLUSTER_NAME \
 -var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=force_destroy=$FORCE_DESTROY \
 -var=tpu_machine_type=$TPU_MACHINE_TYPE \
 -var=tpu_topology=$TPU_TOPOLOGY \
 -var=tpu_num_nodes=$TPU_NUM_NODES \
@@ -215,6 +218,7 @@ terraform destroy \
 -var=subnet_name=$SUBNET_NAME \
 -var=cluster_name=$CLUSTER_NAME \
 -var=artifact_repository_bucket_name=$ARTIFACT_REPOSITORY_BUCKET_NAME \
+-var=force_destroy=$FORCE_DESTROY \
 -var=tpu_machine_type=$TPU_MACHINE_TYPE \
 -var=tpu_topology=$TPU_TOPOLOGY \
 -var=tpu_num_nodes=$TPU_NUM_NODES \
