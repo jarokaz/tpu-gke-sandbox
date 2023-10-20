@@ -17,11 +17,11 @@
 apiVersion: jobset.x-k8s.io/v1alpha2
 kind: JobSet
 metadata:
-  name: maxtext-singleslice-
+  name: maxtext-run-
 spec:
   replicatedJobs:
   - name: slice
-    replicas: 2
+    replicas: 1
     template:
       spec:
         template:
@@ -33,23 +33,10 @@ spec:
               - configMapRef:
                   name: maxtext-parameters
               command:
-              - python3 
-              - MaxText/train.py
-              - MaxText/configs/base.yml
-              - run_name=$(RUN_NAME)
-              - steps=$(STEPS)
-              - dataset_path=$(DATASET_PATH)
-              - base_output_directory=$(BASE_OUTPUT_DIRECTORY)
-              - ici_fsdp_parallelism=$(ICI_FSDP_PARALLELISM)
-              - dcn_data_parallelism=$(DCN_DATA_PARALLELISM)
-              - per_device_batch_size=$(PER_DEVICE_BATCH_SIZE)
-              - enable_profiler=$(ENABLE_PROFILER)
-              - remat_policy=$(REMAT_POLICY)
-              - base_emb_dim=$(BASE_EMB_DIM)
-              - base_num_heads=$(BASE_NUM_HEADS)
-              - base_mlp_dim=$(BASE_MLP_DIM)
-              - base_num_decoder_layers=$(BASE_NUM_DECODER_LAYERS)
-              - head_dim=$(HEAD_DIM)
+              - bash
+              - -c
+              - |
+                python3 MaxText/train.py MaxText/configs/base.yml run_name=$RUN_NAME dataset_path=$DATASET_PATH base_output_directory=$BASE_OUTPUT_DIRECTORY $ARGS
   - name: tensorboard 
     template:
       spec:

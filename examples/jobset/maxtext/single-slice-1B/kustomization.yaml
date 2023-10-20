@@ -1,0 +1,60 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+nameSuffix: "singleslice-16b-107"
+
+configMapGenerator:
+- name: maxtext-parameters
+  literals:
+  - REPLICAS=1
+  - RUN_NAME=singlelslice-16b-107
+  - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
+  - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
+  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/3848330279634599936
+  - ARGS="steps=160" 
+#  - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
+#  - ICI_FSDP_PARALLELISM=8
+#  - DCN_DATA_PARALLELISM=2
+#  - PER_DEVICE_BATCH_SIZE=16
+#  - ENABLE_PROFILER=true
+#  - REMAT_POLICY=full
+#  - BASE_EMB_DIM=2560
+#  - BASE_NUM_HEADS=8
+#  - BASE_MLP_DIM=8192
+#  - BASE_NUM_DECODER_LAYERS=16
+#  - HEAD_DIM=256 
+
+resources:
+- ../base_maxtext
+
+replacements:
+- source:
+    kind: ConfigMap
+    name: maxtext-parameters 
+    fieldPath: data.REPLICAS
+  targets:
+    - select:
+        kind: JobSet
+        version: v1alpha2
+      fieldPaths:
+        - spec.replicatedJobs.0.replicas
+ 
+
+
+
+
+

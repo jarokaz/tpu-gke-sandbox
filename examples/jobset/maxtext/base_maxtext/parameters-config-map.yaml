@@ -12,33 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
 
-namespace: tpu-training
-
-nameSuffix: "902"
-
-configMapGenerator:
-- name: maxtext-parameters
-  literals:
-  - RUN_NAME=maxtext-902
-  - STEPS=500
-  - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
-  - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
-  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/1035537643225481216
-
-resources:
-- ../../base_jobset
- 
-patches:
-- path: jobset-spec-patch.yaml
-  target:
-    kind: JobSet
-  options:
-    allowNameChange: true
-
-
-
-
-
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maxtext-parameters
+data:
+  BASE_OUTPUT_DIRECTORY: gs://jk-gke-aiml-repository/runs
+  DATASET_PATH: gs://jk-gke-aiml-repository/datasets
+  DCN_DATA_PARALLELISM: "2"
+  ICI_FSDP_PARALLELISM: "8"
+  PER_DEVICE_BATCH_SIZE: "16"
+  REPLICAS: "2"
+  STEPS: "100"
+  ENABLE_PROFILER=false
+  REMAT_POLICY=full
+  BASE_EMB_DIM="2560"
+  BASE_NUM_HEADS="8"
+  BASE_MLP_DIM="8192"
+  BASE_NUM_DECODER_LAYERS="16"
+  HEAD_DIM="256" 

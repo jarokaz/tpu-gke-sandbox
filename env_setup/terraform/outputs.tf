@@ -17,3 +17,7 @@ output "output_cluster_id" {
     value = module.gke.cluster_id
 }
 
+output "tensorboard_id" {
+    value = google_vertex_ai_tensorboard.tensorboard.id
+}
+

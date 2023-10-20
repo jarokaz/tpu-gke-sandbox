@@ -169,7 +169,7 @@ Multislice examples use `JobSet` CRD which is not installed by default.
 Get cluster credentials.
 
 ```
-gcloud container clusters get-credentials $CLUSTER_NAME
+gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION
 ```
 
 Install `JobSet`
