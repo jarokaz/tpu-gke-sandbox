@@ -24,4 +24,3 @@ patches:
     kind: JobSet
   options:
     allowNameChange: true
-
