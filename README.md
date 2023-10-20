@@ -114,8 +114,8 @@ export NETWORK_NAME=jk-gke-network
 export SUBNET_NAME=jk-gke-subnet
 export CLUSTER_NAME=jk-tpu-training-cluster
 export TPU_MACHINE_TYPE=ct4p-hightpu-4t
-export TPU_TOPOLOGY=2x2x2
-export TPU_NUM_NODES=2
+export TPU_TOPOLOGY=2x2x4
+export TPU_NUM_NODES=4
 export NUM_TPU_POOLS=2
 export FORCE_DESTROY=true
 

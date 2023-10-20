@@ -17,8 +17,9 @@ kind: Kustomization
 
 resources:
 - cluster_queue.yaml
+- resource_flavor_v4-16.yaml
+- resource_flavor_v4-32.yaml
 - local_queue.yaml
-- resource_flavor.yaml
 - priority_class_very_high.yaml
 - priority_class_high.yaml
 - priority_class_medium.yaml

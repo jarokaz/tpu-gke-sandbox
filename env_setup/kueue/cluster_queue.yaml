@@ -25,4 +25,8 @@ spec:
     - name: v4-16 
       resources:
       - name: "google.com/tpu"
-        nominalQuota: 16 
+        nominalQuota: 0 
+    - name: v4-32
+      resources:
+      - name: "google.com/tpu"
+        nominalQuota: 32 

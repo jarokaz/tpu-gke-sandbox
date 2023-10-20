@@ -15,28 +15,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-nameSuffix: "singleslice-16b-107"
+nameSuffix: "multislice-16b-113"
 
 configMapGenerator:
 - name: maxtext-parameters
   literals:
-  - REPLICAS=1
-  - RUN_NAME=singlelslice-16b-107
+  - REPLICAS=2
+  - RUN_NAME=multislice-16b-113
   - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
   - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
   - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/3848330279634599936
-  - ARGS="steps=160" 
-#  - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
-#  - ICI_FSDP_PARALLELISM=8
-#  - DCN_DATA_PARALLELISM=2
-#  - PER_DEVICE_BATCH_SIZE=16
-#  - ENABLE_PROFILER=true
-#  - REMAT_POLICY=full
-#  - BASE_EMB_DIM=2560
-#  - BASE_NUM_HEADS=8
-#  - BASE_MLP_DIM=8192
-#  - BASE_NUM_DECODER_LAYERS=16
-#  - HEAD_DIM=256 
+  - ARGS="steps=1000 log_period=100 save_period=500 ici_fsdp_parallelism=16 dcn_data_parallelism=2 per_device_batch_size=12 base_emb_dim=2560 base_num_heads=8 base_mlp_dim=8192 head_dim=256 base_num_decoder_layers=16" 
+  - LIBTPU_INIT_ARGS="--xla_enable_async_all_gather=true TPU_MEGACORE=MEGACORE_DENSE"
+
 
 resources:
 - ../base_maxtext

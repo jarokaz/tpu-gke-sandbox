@@ -12,23 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-apiVersion: v1
-kind: ConfigMap
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ResourceFlavor
 metadata:
-  name: maxtext-parameters
-data:
-  BASE_OUTPUT_DIRECTORY: gs://jk-gke-aiml-repository/runs
-  DATASET_PATH: gs://jk-gke-aiml-repository/datasets
-  DCN_DATA_PARALLELISM: "2"
-  ICI_FSDP_PARALLELISM: "8"
-  PER_DEVICE_BATCH_SIZE: "16"
-  REPLICAS: "2"
-  STEPS: "100"
-  ENABLE_PROFILER=false
-  REMAT_POLICY=full
-  BASE_EMB_DIM="2560"
-  BASE_NUM_HEADS="8"
-  BASE_MLP_DIM="8192"
-  BASE_NUM_DECODER_LAYERS="16"
-  HEAD_DIM="256" 
+  name: v4-32
+spec:
+  nodeLabels:
+    cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
+    cloud.google.com/gke-tpu-topology: 2x2x4
