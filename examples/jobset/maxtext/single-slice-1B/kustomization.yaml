@@ -15,13 +15,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-nameSuffix: "singleslice-16b-109"
+nameSuffix: "singleslice-1b-109"
 
 configMapGenerator:
 - name: maxtext-parameters
   literals:
   - REPLICAS=1
-  - RUN_NAME=singlelslice-16b-109
+  - RUN_NAME=singlelslice-1b-109
   - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
   - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
   - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/3848330279634599936
