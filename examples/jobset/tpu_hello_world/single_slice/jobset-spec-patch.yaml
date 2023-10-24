@@ -25,9 +25,6 @@ spec:
       spec:
         template:
           spec:
-            nodeSelector:
-              cloud.google.com/gke-tpu-accelerator: tpu-v4-podslice
-              cloud.google.com/gke-tpu-topology: 2x2x2             
             containers:
             - name: tpu-job 
               image: gcr.io/jk-mlops-dev/maxtext-runner-image
