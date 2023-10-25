@@ -41,7 +41,7 @@ steps:
         terraform init -backend-config="bucket=$_TF_STATE_BUCKET" -backend-config="prefix=$_TF_STATE_PREFIX"
 
   - id: 'tf destroy'
-    name: 'hashicorp/terraform:1.6.2'
+    name: 'hashicorp/terraform'
     entrypoint: 'sh'
     dir: terraform
     args: 

@@ -201,6 +201,7 @@ export SUBNET_NAME=jk-gke-subnet
 export CLUSTER_NAME=jk-tpu-training-cluster
 export TPU_TYPE=v4-32
 export NUM_TPU_POOLS=2
+export NAMESPACE=tpu-training
 
 export TPU_MACHINE_TYPE=ct4p-hightpu-4t
 export TPU_TOPOLOGY=2x2x4
