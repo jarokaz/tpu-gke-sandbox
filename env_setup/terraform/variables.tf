@@ -161,6 +161,11 @@ variable "tpu_machine_type" {
     default = "ct4p-hightpu-4t"
 }
 
+variable "tpu_type" {
+    description = "TPU type"
+    default = "v4-16"
+}
+
 variable "tpu_topology" {
     description = "TPU slice topology"
     default = "2x2x2"

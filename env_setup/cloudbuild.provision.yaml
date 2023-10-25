@@ -14,8 +14,8 @@
 
 steps:
   - id: log parameters 
-    name: gcr.io/google.com/cloudsdktool/cloud-sdk
-    entrypoint: /bin/bash
+    name: 'hashicorp/terraform'
+    entrypoint: 'sh' 
     args:
       - -c
       - |
@@ -28,13 +28,13 @@ steps:
           echo subnet_name=$_SUBNET_NAME
           echo repository_bucket_name=$_ARTIFACT_REPOSITORY_BUCKET_NAME
           echo cluster_name=$_CLUSTER_NAME
-          echo tpu_machine_type=$_TPU_MACHINE_TYPE
-          echo tpu_topology=$_TPU_TOPOLOGY
-          echo tpu_num_nodes=$_TPU_NUM_NODES
+          echo tpu_namespace=$_NAMESPACE
+          echo tpu_type=$_TPU_TYPE
           echo num_tpu_pools=$_NUM_TPU_POOLS
           echo jobset_api_version=$_JOBSET_API_VERSION
+
   - id: 'tf init'
-    name: 'hashicorp/terraform:1.6.2'
+    name: 'hashicorp/terraform'
     entrypoint: 'sh'
     dir: terraform
     args: 
@@ -43,7 +43,7 @@ steps:
         terraform init -backend-config="bucket=$_TF_STATE_BUCKET" -backend-config="prefix=$_TF_STATE_PREFIX"
 
   - id: 'tf plan'
-    name: 'hashicorp/terraform:1.6.2'
+    name: 'hashicorp/terraform'
     entrypoint: 'sh'
     dir: terraform
     args: 
@@ -55,15 +55,14 @@ steps:
         -var=network_name=$_NETWORK_NAME \
         -var=subnet_name=$_SUBNET_NAME \
         -var=cluster_name=$_CLUSTER_NAME \
+        -var=tpu_namespace=$_NAMESPACE \
         -var=artifact_repository_bucket_name=$_ARTIFACT_REPOSITORY_BUCKET_NAME \
-        -var=tpu_machine_type=$_TPU_MACHINE_TYPE \
-        -var=tpu_topology=$_TPU_TOPOLOGY \
-        -var=tpu_num_nodes=$_TPU_NUM_NODES \
+        -var=tpu_type=$_TPU_TYPE \
         -var=num_tpu_pools=$_NUM_TPU_POOLS \
         -var=zone=$_ZONE
 
   - id: 'tf apply'
-    name: 'hashicorp/terraform:1.6.2'
+    name: 'hashicorp/terraform'
     entrypoint: 'sh'
     dir: terraform
     args: 
@@ -75,10 +74,9 @@ steps:
         -var=network_name=$_NETWORK_NAME \
         -var=subnet_name=$_SUBNET_NAME \
         -var=cluster_name=$_CLUSTER_NAME \
+        -var=tpu_namespace=$_NAMESPACE \
         -var=artifact_repository_bucket_name=$_ARTIFACT_REPOSITORY_BUCKET_NAME \
-        -var=tpu_machine_type=$_TPU_MACHINE_TYPE \
-        -var=tpu_topology=$_TPU_TOPOLOGY \
-        -var=tpu_num_nodes=$_TPU_NUM_NODES \
+        -var=tpu_type=$_TPU_TYPE \
         -var=num_tpu_pools=$_NUM_TPU_POOLS \
         -var=zone=$_ZONE
 
@@ -99,3 +97,21 @@ steps:
       - |
         kubectl apply -f "https://github.com/kubernetes-sigs/kueue/releases/download/$_KUEUE_API_VERSION/manifests.yaml"
 
+  - id: 'Config Kueue'
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk 
+    entrypoint: /bin/bash
+    dir: kueue
+    args:
+      - -c
+      - |
+        curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+        mv kustomize /usr/local/bin
+        kustomize edit set namespace $_NAMESPACE
+        kustomize edit remove configmap tpu-config
+        kustomize edit add configmap tpu-config --from-literal=NAME=$_TPU_TYPE --from-literal=NUM_OF_CHIPS=$_NUM_OF_CHIPS
+        kustomize build . | kubectl apply -f - 
+
+
+
+
+ 
