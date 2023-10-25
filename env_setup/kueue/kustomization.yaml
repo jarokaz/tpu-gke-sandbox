@@ -25,3 +25,31 @@ resources:
 - priority_class_medium.yaml
 - priority_class_low.yaml
 - priority_class_very_low.yaml
+
+configMapGenerator:
+- name: tpu-config
+  literals:
+  - NAME=v4-32
+  - NUMBER_OF_CHIPS=32 
+
+replacements:
+- source:
+    kind: ConfigMap
+    name: tpu-config 
+    fieldPath: data.NAME
+  targets:
+    - select:
+        kind: ClusterQueue 
+        version: v1beta1
+      fieldPaths:
+        - spec.resourceGroups.0.flavors.0.name
+- source:
+    kind: ConfigMap
+    name: tpu-config 
+    fieldPath: data.NUMBER_OF_CHIPS
+  targets:
+    - select:
+        kind: ClusterQueue 
+        version: v1beta1
+      fieldPaths:
+        - spec.resourceGroups.0.flavors.0.resources.0.nominalQuota
