@@ -43,7 +43,26 @@ cloudtrace.googleapis.com \
 iamcredentials.googleapis.com \
 monitoring.googleapis.com \
 logging.googleapis.com \
-aiplatform.googleapis.com 
+aiplatform.googleapis.com \
+config.googleapis.com 
+
+```
+
+### A service account for Infrastructure Manager
+
+```
+IM_SERVICE_ACCOUNT_NAME=infrastructure-manager-sa
+
+gcloud iam service-accounts create $IM_SERVICE_ACCOUNT_NAME
+
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/config.agent
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/compute.networkAdmin
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/compute.storageAdmin
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/aiplatform.user
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/iam.serviceAccountCreator
+gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:$IM_SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/container.clusterAdmin
+
+
 
 ```
 
@@ -105,6 +124,8 @@ terraform init \
 
 To provision the environment configure the input variables and apply the configuration. For example, to create an environment with a single TPU v4-16 slice use the following settings.
 
+
+
 ```
 export PROJECT_ID=jk-mlops-dev
 export REGION=us-central2
@@ -133,6 +154,37 @@ terraform apply \
 -var=tpu_num_nodes=$TPU_NUM_NODES \
 -var=num_tpu_pools=$NUM_TPU_POOLS \
 -var=zone=$ZONE
+```
+
+
+```
+export TF_STATE_BUCKET=jk-mlops-dev-tf-state
+export TF_STATE_PREFIX=gke-tpu-training-environment
+
+export PROJECT_ID=jk-mlops-dev
+export REGION=us-central2
+export ZONE=us-central2-b
+export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
+export NETWORK_NAME=jk-gke-network
+export SUBNET_NAME=jk-gke-subnet
+export CLUSTER_NAME=jk-tpu-training-cluster
+export TPU_MACHINE_TYPE=ct4p-hightpu-4t
+export TPU_TOPOLOGY=2x2x4
+export TPU_NUM_NODES=4
+export NUM_TPU_POOLS=2
+export JOBSET_API_VERSION="v0.2.3"
+export KUEUE_API_VERSION=v0.4.2
+
+
+gcloud builds submit \
+  --region $REGION \
+  --config cloudbuild.provision.yaml \
+  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_TPU_MACHINE_TYPE=$TPU_MACHINE_TYPE,_TPU_TOPOLOGY=$TPU_TOPOLOGY,_TPU_NUM_NODES=$TPU_NUM_NODES,_NUM_TPU_POOLS=$NUM_TPU_POOLS,_JOBSET_API_VERSION=$JOBSET_API_VERSION,_KUEUE_API_VERSION=$KUEUE_API_VERSION \
+  --timeout "2h" \
+  --machine-type=e2-highcpu-32 \
+  --quiet
+
+
 ```
 
 ### Removing or reconfiguring TPU node pools
