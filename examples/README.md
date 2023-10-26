@@ -24,19 +24,6 @@ gcloud builds submit \
 --quiet
 ```
 
-```
-PROJECT_ID=jk-mlops-dev
-MAX_TEXT_IMAGE_NAME=maxtext-runner
-TB_UPLOADER_IMAGE_NAME=tb-uploader
-TB_UPLOADER_IMAGE_URI=gcr.io/$PROJECT_ID/$TB_UPLOADER_IMAGE_NAME
-
-gcloud builds submit \
---project $PROJECT_ID \
---config build-images.yaml \
---substitutions _TB_UPLOADER_IMAGE_URI=$TB_UPLOADER_IMAGE_URI \
---machine-type=e2-highcpu-32 \
---quiet
-```
 
 You also need to create cluster credentials to run both `jobset` and `xpk` credentials.
 
