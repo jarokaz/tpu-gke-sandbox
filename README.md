@@ -153,7 +153,7 @@ The `tpu_type` variable is a name of a TPU slice configuration as defined in the
 | v4-4096| tpu-v4-podslice | 8x16x16 | ct4p-hightpu-4t | 512 | 4 |
 
 
-The Terraform configuration can be applied directly with the `terraform` CLI. Additionally, we have provided a **Cloud Build** configuration - `env_setup/cloudbuild.provision.yaml` - that, in addition to applying the Terraform configuration, installs the **JobSet** and **Kueue** APIs and configures Kueue resources. We recommend using **Cloud Build** to provision and configure the environment in a single step.
+The Terraform configuration can be applied directly with the `terraform` CLI. We have also provided a **Cloud Build** configuration - `env_setup/cloudbuild.provision.yaml` - that, in addition to applying the Terraform configuration, installs the **JobSet** and **Kueue** APIs and configures Kueue resources. We recommend using **Cloud Build** to provision and configure the environment in a single step.
 
 Before running **Cloud Build** you need to update the following environment variables to reflect your environment
 
