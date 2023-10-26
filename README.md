@@ -105,9 +105,10 @@ The Terraform configuration supports the following input variables:
 
 | Variable | Description | Default |
 | -------- | ------------|---------|
-| region | The compute region for the environment | NA|
+| region | The compute region for the Cluster | NA|
+| tensorboard_region | The compute region for Vertex AI TensorBoard  | NA|
 | artifact_repository_bucket_name|The name of the GCS bucket|NA|
-| zone | The zone for the cluster. Make sure that the zone supports the required TPU resources| NA |
+| zone | The zone for the TPU node pools. Make sure that the zone supports the required TPU resources| NA |
 | networt_name | The name of the network for the cluster | NA |
 | subnet_name | The name of the subnet  for the cluster | NA |
 | subnet_ip_range | The IP address range for the subnet | 10.129.0.0/20 |
@@ -160,6 +161,7 @@ Before running **Cloud Build** you need to update the following environment vari
 ```
 export PROJECT_ID=jk-mlops-dev
 export REGION=us-central2
+export TENSORBOARD_REGION=us-central1
 export ZONE=us-central2-b
 export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
 export NETWORK_NAME=jk-gke-network
@@ -188,7 +190,7 @@ To start provisioning execute the following command:
 ```
 gcloud builds submit \
   --config cloudbuild.provision.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS,_NUM_OF_CHIPS=$NUM_OF_CHIPS,_JOBSET_API_VERSION=$JOBSET_API_VERSION,_KUEUE_API_VERSION=$KUEUE_API_VERSION \
+  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_TENSORBOARD_REGION=$TENSORBOARD_REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS,_NUM_OF_CHIPS=$NUM_OF_CHIPS,_JOBSET_API_VERSION=$JOBSET_API_VERSION,_KUEUE_API_VERSION=$KUEUE_API_VERSION \
   --timeout "2h" \
   --machine-type=e2-highcpu-32 \
   --quiet
@@ -205,6 +207,7 @@ export TF_STATE_PREFIX=gke-tpu-training-environment
 
 export PROJECT_ID=jk-mlops-dev
 export REGION=us-central2
+export TENSORBOARD_REGION=us-central1
 export ZONE=us-central2-b
 export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
 export NETWORK_NAME=jk-gke-network
@@ -216,7 +219,7 @@ export NAMESPACE=tpu-training
 
 gcloud builds submit \
   --config cloudbuild.destroy.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS \
+  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_TENSORBOARD_REGION=$TENSORBOARD_REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS \
   --timeout "2h" \
   --machine-type=e2-highcpu-32 \
   --quiet

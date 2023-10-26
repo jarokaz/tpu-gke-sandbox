@@ -23,6 +23,7 @@ steps:
           echo state_gcs_location=$_TF_STATE_BUCKET/$_TF_STATE_PREFIX
           echo project_id=$PROJECT_ID
           echo region=$_REGION
+          echo tensorboard_region=$_TENSORBOARD_REGION
           echo zone=$_ZONE
           echo network_name=$_NETWORK_NAME
           echo subnet_name=$_SUBNET_NAME
@@ -31,7 +32,9 @@ steps:
           echo tpu_namespace=$_NAMESPACE
           echo tpu_type=$_TPU_TYPE
           echo num_tpu_pools=$_NUM_TPU_POOLS
+          echo num_of_chips=$NUM_OF_CHIPS
           echo jobset_api_version=$_JOBSET_API_VERSION
+          echo kueue_api_version=$_KUEUE_API_VERSION
 
   - id: 'tf init'
     name: 'hashicorp/terraform'
@@ -52,6 +55,7 @@ steps:
         terraform plan \
         -var=project_id=$PROJECT_ID \
         -var=region=$_REGION \
+        -var=tensorboard_region=$_TENSORBOARD_REGION \
         -var=network_name=$_NETWORK_NAME \
         -var=subnet_name=$_SUBNET_NAME \
         -var=cluster_name=$_CLUSTER_NAME \
@@ -71,6 +75,7 @@ steps:
         terraform apply -auto-approve \
         -var=project_id=$PROJECT_ID \
         -var=region=$_REGION \
+        -var=tensorboard_region=$_TENSORBOARD_REGION \
         -var=network_name=$_NETWORK_NAME \
         -var=subnet_name=$_SUBNET_NAME \
         -var=cluster_name=$_CLUSTER_NAME \
