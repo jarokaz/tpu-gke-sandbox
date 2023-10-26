@@ -13,7 +13,6 @@
 # limitations under the License.
 
 steps:
-  # Clone Maxtext GitHub repo
   - id: clone repo
     name: google/cloud-sdk:latest
     entrypoint: /bin/bash
@@ -21,6 +20,15 @@ steps:
       - -c
       - |
           git clone https://github.com/google/maxtext.git /workspace/maxtext
+
+  - id: copy datasets
+    name: google/cloud-sdk:latest
+    entrypoint: /bin/bash
+    dir: /workspace/maxtext
+    args:
+      - -c
+      - |
+          ./download_dataset.sh $PROJECT_ID $_DATASETS_URI 
 
   - id: build and upload Maxtext image 
     name: google/cloud-sdk:latest

@@ -28,7 +28,7 @@ spec:
           spec:
             containers:
             - name: tpu-job 
-              image: gcr.io/jk-mlops-dev/maxtext-runner-image
+              image: maxtext-runner-image
               envFrom:
               - configMapRef:
                   name: maxtext-parameters
@@ -45,7 +45,7 @@ spec:
             serviceAccountName: cloud-tpu-sa
             containers:
             - name: tb-uploader 
-              image: gcr.io/jk-mlops-dev/tb-uploader
+              image: tb-uploader-image
               command:
               - tb-gcp-uploader
               args:

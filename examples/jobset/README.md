@@ -73,9 +73,14 @@ kubectl delete -k multi_slice
 
 ## MaxText pretraining examples
 
-The `maxtext` folder contains examples of pretraining a MaxText 6.5 billion parameters on the C4 dataset.
+The `maxtext` folder contains examples of pretraining a MaxText 6.5 billion parameters model on the C4 dataset.
 
-The `maxtext/base_maxtext` folder contains the base configuration of the JobSet workload. If you review the `maxtext\base_maxtext\jobset-spec-patch.yaml` you will notice that a JobSet resource is configured with two job templates. One (named `slice`) starts a MaxText trainers. The other (named 'tensorboard') starts a TensorBoard uploader.
+The `maxtext/base_maxtext` folder contains the base configuration of the JobSet workload. If you review the `maxtext\base_maxtext\jobset-spec-patch.yaml` you will notice that a JobSet resource is configured with two job templates. One (named `slice`) starts the MaxText trainer. The other (named `tensorboard`) starts the TensorBoard uploader. The runtime parameters to the MaxText trainer and the TensorBoard uploader are passed through environment variables that are set through the `maxtext-parameters` ConfigMap.
+
+The `single-slice-6B` and `multi-slice-6B` folders contain the Kustomize overlays that customize the base MaxText JobSet configuration for running a single slice and multislice training workloads.
+
+To run the samples in your environment
+
 
 
 
