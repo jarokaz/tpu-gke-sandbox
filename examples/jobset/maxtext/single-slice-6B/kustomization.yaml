@@ -17,16 +17,16 @@ kind: Kustomization
 
 namespace: tpu-training
 
-nameSuffix: "singleslice-6b-103"
+nameSuffix: "singleslice-6b-104"
 
 configMapGenerator:
 - name: maxtext-parameters
   literals:
   - REPLICAS=1
-  - RUN_NAME=multilslice-6b-103
+  - RUN_NAME=multilslice-6b-104
   - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
   - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
-  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/3848330279634599936
+  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/9050550799200944128
   - ARGS="steps=200 log_period=50 save_period=100 dcn_data_parallelism=1 ici_fsdp_parallelism=16 per_device_batch_size=16 remat_policy=full base_emb_dim=4096 base_num_heads=16 base_mlp_dim=16384 head_dim=256 base_num_decoder_layers=32" 
   - LIBTPU_INIT_ARGS="--xla_enable_async_all_gather=true TPU_MEGACORE=MEGACORE_DENSE"
 
