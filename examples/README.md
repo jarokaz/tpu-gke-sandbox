@@ -6,18 +6,34 @@ This reference guide recommends using the JobSet and Kueue APIs as the preferred
 
 The examples are all based on the [MaxText](https://github.com/google/maxtext/tree/main) code base. MaxText is a high-performance, highly scalable, open-source LLM code base written in pure Python/Jax. It is optimized for Google Cloud TPUs and can achieve 55% to 60% MFU (model flops utilization). MaxText is designed to be a launching point for ambitious LLM projects in both research and production. It is also an excellent code base for demonstrating large-scale training design and operational patterns as attempted in this guide.
 
-Before you can run the examples, you need to package MaxText as a training container image. We have automated this process with Cloud Build. 
+Before you can run the examples, you need to package MaxText as a training container image. You also need to build auxiliary images used in some examples, including a container image that packages the [TensorBoar uploader](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-overview#upload-tb-logs). We have automated this process with Cloud Build. 
 
 To build and push the container image to your Container Registry, run the following command:
 
 ```
 PROJECT_ID=jk-mlops-dev
 MAX_TEXT_IMAGE_NAME=maxtext-runner
+TB_UPLOADER_IMAGE_NAME=tb-uploader
+TB_UPLOADER_IMAGE_URI=gcr.io/$PROJECT_ID/$TB_UPLOADER_IMAGE_NAME
 
 gcloud builds submit \
 --project $PROJECT_ID \
---config build-maxtext.yaml \
---substitutions _MAXTEXT_IMAGE_NAME=$MAX_TEXT_IMAGE_NAME \
+--config build-images.yaml \
+--substitutions _MAXTEXT_IMAGE_NAME=$MAX_TEXT_IMAGE_NAME,_TB_UPLOADER_IMAGE_URI=$TB_UPLOADER_IMAGE_URI \
+--machine-type=e2-highcpu-32 \
+--quiet
+```
+
+```
+PROJECT_ID=jk-mlops-dev
+MAX_TEXT_IMAGE_NAME=maxtext-runner
+TB_UPLOADER_IMAGE_NAME=tb-uploader
+TB_UPLOADER_IMAGE_URI=gcr.io/$PROJECT_ID/$TB_UPLOADER_IMAGE_NAME
+
+gcloud builds submit \
+--project $PROJECT_ID \
+--config build-images.yaml \
+--substitutions _TB_UPLOADER_IMAGE_URI=$TB_UPLOADER_IMAGE_URI \
 --machine-type=e2-highcpu-32 \
 --quiet
 ```

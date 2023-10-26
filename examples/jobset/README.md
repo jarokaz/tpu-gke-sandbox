@@ -73,14 +73,10 @@ kubectl delete -k multi_slice
 
 ## MaxText pretraining examples
 
+The `maxtext` folder contains examples of pretraining a MaxText 6.5 billion parameters on the C4 dataset.
+
+The `maxtext/base_maxtext` folder contains the base configuration of the JobSet workload. If you review the `maxtext\base_maxtext\jobset-spec-patch.yaml` you will notice that a JobSet resource is configured with two job templates. One (named `slice`) starts a MaxText trainers. The other (named 'tensorboard') starts a TensorBoard uploader.
 
 
-Before running any examples, you need to update the base configurations for **Job** and **JobSet** so they reflect your environment.
-
-- Update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs as configured in your environment.
-- Optional: Update `hostNetwork` and `dnsPolicy` in `base_multi_slice_job_spec/jobset.yaml`. Multislice training benefits from the performance optimized configuration configuration of internode network (DCN). The default settings for `hostNetwork` - `true` and `dnsPolicy` - `ClusterFirstWithHostNet` configure Kubernetes Pods to use the host network directly for VM to VM communication. This maximizes network performance but constraints some security controls. For example, Workload Identity cannot be used with this network configuration. If you want to turn off host networking remove these to settings from `base_multi_slice_job_spec/jobset.yaml`. 
-
-
-To run a specific sample follow instructions in the sample's README file.
 
 

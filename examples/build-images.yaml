@@ -34,5 +34,16 @@ steps:
           chmod 755 docker_upload_runner.sh
           ./docker_upload_runner.sh CLOUD_IMAGE_NAME=$_MAXTEXT_IMAGE_NAME
 
+  - id: build the Tensorboard uploader image
+    name: google/cloud-sdk:latest
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - |
+        docker build -t $_TB_UPLOADER_IMAGE_URI -f Dockerfile.tensorboard .
+
+images:
+  - $_TB_UPLOADER_IMAGE_URI:latest
+
 options:
   dynamic_substitutions: true
