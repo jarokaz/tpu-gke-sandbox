@@ -29,7 +29,7 @@ gcloud builds submit \
 ```
 
 
-You also need to create cluster credentials to run both `jobset` and `xpk` credentials.
+To submit workloads to the cluster you need to create cluster credentials.
 
 ```
 gcloud container clusters get-credentials <YOUR CLUSTER NAME> --region <YOUR REGION>

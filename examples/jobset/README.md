@@ -1,7 +1,7 @@
 # Configuring and running JobSet workloads with Kustomize
 
 
-The examples in this folder show how to configure and run JobSet workloads using Kustomize. The `base_jobset` folder contains the base JobSet configuration that is used in overlays in the `tpu_hello_world` and `maxtext` folders.
+The examples in this folder show how to configure and run JobSet workloads using Kustomize. The `base_jobset` folder contains the base JobSet configuration that is referenced in overlays in the `tpu_hello_world` and `maxtext` folders.
 Before running the examples, modify the `base_jobset\jobset.yaml` file to reflect the topology of TPU slices provisioned in your environment. For example, if you provisioned `v4-64` based node pools, update the node selector settings in  `spec.replicatedJobs.template.spec.template.spec.nodeSelector` with `tpu-v4-podslice` and `2x4x4` values and the `parallelism` and `completions` fields in the `spec.replicatedJobs.template.spec` with 4 - a v4-64 slice comprises 4 TPU VMs.
 
 In addition, you need to install Kustomize. Please follow the instructions in the [Kustomize documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/).
@@ -13,7 +13,7 @@ In the `tpu_hello_world` folder you will find examples of experimenting with dif
 
 The `tpu_hello_world\single_slice` folder contains the example configuration of a single slice workload configured for  Interchip Interconnect (ICI) sharding using Fully Sharded Data Parallelism (FSDP). The `tpu_hello_world\multi-slice` is a configuration for a multi-slice workload with data parallelism (DP) over data-center network (DCN) connections and FSDP over ICI.
 
-To adapt the samples to your environment update the `namespace` and `images` fields in the `kustomization.yaml` files to reflect your environment. Set the `namespace` field to a Kubernetes namespace created during setup. As your recall, the Kueue LocalQueue used to admit workloads has been provisioned in this namespace. Update the `newName` property of the `images` field with the name of MaxText training container image build in the previous steps.
+To adapt the samples to your environment update the `namespace` and `images` fields in the `kustomization.yaml` files to reference names used in your configuration. Set the `namespace` field to a Kubernetes namespace created during setup. As your recall, a Kueue LocalQueue used to admit workloads has been provisioned in this namespace. Update the `newName` property of the `images` field with the name of your MaxText training container image.
 
 To run a single slice example execute the following command from the `tpu_hello_world` folder:
 
