@@ -1,21 +1,26 @@
 # TPU training workloads examples
 
-This folder contains examples of how to configure and run TPU training jobs using the following methods:
-- Using the Kubernetes **Job** resource to run single-slice TPU training jobs
-- Using the Kubernetes **JobSet** resource to run multi-slice TPU training jobs
+This reference guide recommends using the JobSet and Kueue APIs as the preferred way to orchestrate large-scale distributed training workloads on GKE. You can create JobSet yaml configurations in a variety of ways. Our examples demonstrate two approaches:
+- Using [Kustomize](https://kustomize.io/). **Kustomize** is a tool that streamlines and simplifies the creation and adaptation of complex configurations like JobSets. It provides robust configuration management and template-free customization. There are examples of creating JobSet configurations using Kustomize in the `jobset` folder.
+- Using [xpk](https://github.com/google/maxtext/tree/main/xpk). **xpk** (Accelerated Processing Kit) is a Python-based tool that helps to orchestrate large-scale training jobs on GKE. **xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup. The **xpk** examples are in the `xpk` folder.
 
-To simplify the configuration of **Job** and **JobSet** resources, we use [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/). The `base_single_slice` folder contains base configurations for  single-slice jobs and the `base_multi_slice` folder base configurations for multi-slice jobs.  Specific job examples are Kustomize [overlays](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays) using these [bases](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#bases-and-overlays). 
+The examples are all based on the [MaxText](https://github.com/google/maxtext/tree/main) code base. MaxText is a high-performance, highly scalable, open-source LLM code base written in pure Python/Jax. It is optimized for Google Cloud TPUs and can achieve 55% to 60% MFU (model flops utilization). MaxText is designed to be a launching point for ambitious LLM projects in both research and production. It is also an excellent code base for demonstrating large-scale training design and operational patterns as attempted in this guide.
 
-For example, the `maxtext/single_slice` folder contains patches to adapt the base **Job** configuration in `base_single_slice`  to run a single slice pretraining of [Maxtext LLM](https://github.com/google/maxtext). 
+Before you can run the examples, you need to package MaxText as a training container image. We have automated this process with Cloud Build. 
 
-## Update the base configurations
+To build and push the container image to your Container Registry, run the following command:
 
-Before running any examples, you need to update the base configurations for **Job** and **JobSet** so they reflect your environment.
+```
+PROJECT_ID=jk-mlops-dev
+MAX_TEXT_IMAGE_NAME=gcr.io/$PROJECT_ID/maxtext-runner
 
-- Update the `namespace` field in `kustomization.yaml` in both `base_single_slice_job_spec` and `base_multi_slice_job_spec` to match the namespace for running TPU jobs as configured in your environment.
-- Optional: Update `hostNetwork` and `dnsPolicy` in `base_multi_slice_job_spec/jobset.yaml`. Multislice training benefits from the performance optimized configuration configuration of internode network (DCN). The default settings for `hostNetwork` - `true` and `dnsPolicy` - `ClusterFirstWithHostNet` configure Kubernetes Pods to use the host network directly for VM to VM communication. This maximizes network performance but constraints some security controls. For example, Workload Identity cannot be used with this network configuration. If you want to turn off host networking remove these to settings from `base_multi_slice_job_spec/jobset.yaml`. 
+gcloud builds submit \
+--config build-maxtext.yaml \
+--substitutions _MAXTEXT_IMAGE_NAME=$MAX_TEXT_IMAGE_NAME \
+--machine-type=e2-highcpu-32 \
+--quiet
+```
 
-
-To run a specific sample follow instructions in the sample's README file.
+For detailed instructions on running specific examples refer to README documents in the `jobset` and `xpk` folders.
 
 

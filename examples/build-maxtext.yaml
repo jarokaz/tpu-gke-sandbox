@@ -28,7 +28,6 @@ steps:
     args: 
       - -c
       - |
-          
           cd /workspace/maxtext
           chmod 755 docker_build_dependency_image.sh
           ./docker_build_dependency_image.sh MODE=stable
