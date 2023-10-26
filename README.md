@@ -64,9 +64,9 @@ This reference guide recommends using the JobSet and Kueue APIs as the preferred
 
 ## Environment setup
 
-The provisioning of the environment described in the previous section has been automated with Terraform and Cloud Build.
+The provisioning of the environment described in the previous section has been automated with [Terraform](https://cloud.google.com/docs/terraform) and [Cloud Build](https://cloud.google.com/build).
 
-The Terraform configuration can be found in the env_setup/terraform folder. Before applying the configuration, you need to select an existing GCP project or create a new one. You will also need to enable the following services:
+The Terraform configuration can be found in the `env_setup/terraform` folder. Before applying the configuration, you need to select an existing GCP project or create a new one. You will also need to enable the following services:
 
 
 ```
