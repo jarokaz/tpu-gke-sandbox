@@ -1,11 +1,11 @@
 # Running TPU workloads with xpk
 
-**xpk** [(Accelerated Processing Kit, pronounced x-p-k,)](https://github.com/google/maxtext/tree/main/xpk) i is a Python based tool to help Cloud developers to orchestrate training jobs on accelerators such as TPUs and GPUs on GKE. 
+**xpk** [(Accelerated Processing Kit, pronounced x-p-k)](https://github.com/google/maxtext/tree/main/xpk)  is a Python based tool designed to help Cloud developers to orchestrate training jobs on accelerators such as TPUs and GPUs on GKE. 
 
 **xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup.
 
 
-**xpk** uses [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://kueue.sigs.k8s.io/docs/overview/) for running training workloads. It assumes that there is a LocalQueue named `multislice-queue` in the `default` namespace and submits workloads this queue. If you used the `default` namespace when provisioning your environment you can use it as is. If you used a different namespace, create a local queue using the following command.
+**xpk** uses [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://kueue.sigs.k8s.io/docs/overview/) for running training workloads. It assumes that there is a LocalQueue named `multislice-queue` in the `default` namespace and submits workloads to this queue. If you used the `default` namespace when provisioning your environment you can use it as is. If you used a different namespace, create a local queue using the following command.
 
 ```
 cat <<EOF >./local-queue.yaml
@@ -50,7 +50,7 @@ Refer to [xpk documentation](https://github.com/google/maxtext/tree/main/xpk) fo
 
 ## **xpk** and container images
 
-By default, when xpk prepares a workload it layers the local directory (--script-dir) into the base docker image, uploads the updated image to your project's Container Registry, and references the uploaded image in the JobSet template. You can specify the base docker image through the `--base-docker-image` parameter. If you do not specify the base image, xpk attempt to create one using the default settings embedded in `xpk.py` and a local installation of **docker**.
+By default, when xpk prepares a workload it layers the local directory (--script-dir) into the base docker image, uploads the updated image to your project's Container Registry, and references the uploaded image in the JobSet template. You can specify the base docker image through the `--base-docker-image` parameter. If you do not specify the base image, xpk attempt to create one using the default settings embedded in `xpk.py`. **xpk** relies on the local installation of **docker**.
 
 If you don't want this layering behavior, you can specify the image to use through the `--docker-image` parameter.
 
@@ -249,7 +249,7 @@ dataset_path=gs://jk-gke-aiml-repository/datasets \
 base_output_directory=gs://jk-gke-aiml-repository/runs \
 steps=200 log_period=50 save_period=100 \
 per_device_batch_size=16 \
-dcn_data_parallelism=1 ici_fsdp_parallelism=16 \
+dcn_data_parallelism=2 ici_fsdp_parallelism=16 \
 remat_policy=full \
 base_emb_dim=4096 base_num_heads=16 base_mlp_dim=16384 head_dim=256 base_num_decoder_layers=32
 
@@ -265,7 +265,7 @@ ZONE=us-central2-b
 MAXTEXT_TRAINING_CONTAINER_IMAGE=gcr.io/jk-mlops-dev/maxtext-runner
 
 WORKLOAD_ID=multi-slice-6b-501
-NUM_SLICES=1
+NUM_SLICES=2
 
 python3 xpk.py workload create \
 --workload $WORKLOAD_ID \
