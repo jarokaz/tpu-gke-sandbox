@@ -3,7 +3,7 @@
 This reference guide compiles best practices, prescriptive guidance, and code samples for running large-scale TPU v4 and TPU v5e machine learning training workloads on Google Kubernetes Engine (GKE).
 The guide covers two main topics:
 - **Configuring a GKE based environment for large scale training on Cloud TPUs**
-  - This section describes how to configure a GKE cluster to optimize for running large-scale machine learning training workloads on [Cloud TPUs](https://cloud.google.com/tpu).
+  - This section describes how to configure a GKE cluster to optimize it for running large-scale machine learning training workloads on [Cloud TPUs](https://cloud.google.com/tpu).
 - **Defining, Submitting, and Monitoring Training Jobs**
   - This section provides guidance on how to define, submit, and manage training jobs using the Kubernetes [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://github.com/kubernetes-sigs/kueue) APIs.
 
@@ -18,7 +18,7 @@ The diagram below depicts a high-level architecture of the training environment.
 
 ![arch](/images/training-cluster.png)
 
-The foundation of the environment is a regional, VPC-native GKE cluster. The cluster comprises a single node pool with CPU-only nodes and several [Multi-host TPU node pools](https://cloud.google.com/kubernetes-engine/docs/concepts/tpus).
+The foundation of the environment is a regional, VPC-native GKE cluster. The cluster has two types of node pools: a single node pool with CPU-only nodes and several [Multi-host TPU node pools](https://cloud.google.com/kubernetes-engine/docs/concepts/tpus).
 
 This cluster topology supports running both [single-slice and multi-slice TPU](https://cloud.google.com/tpu/docs/multislice-introduction) training jobs.
 
