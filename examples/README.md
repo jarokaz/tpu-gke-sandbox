@@ -12,13 +12,20 @@ To build and push the container image to your Container Registry, run the follow
 
 ```
 PROJECT_ID=jk-mlops-dev
-MAX_TEXT_IMAGE_NAME=gcr.io/$PROJECT_ID/maxtext-runner
+MAX_TEXT_IMAGE_NAME=maxtext-runner
 
 gcloud builds submit \
+--project $PROJECT_ID \
 --config build-maxtext.yaml \
 --substitutions _MAXTEXT_IMAGE_NAME=$MAX_TEXT_IMAGE_NAME \
 --machine-type=e2-highcpu-32 \
 --quiet
+```
+
+You also need to create cluster credentials to run both `jobset` and `xpk` credentials.
+
+```
+gcloud container clusters get-credentials <YOUR CLUSTER NAME> --region <YOUR REGION>
 ```
 
 For detailed instructions on running specific examples refer to README documents in the `jobset` and `xpk` folders.

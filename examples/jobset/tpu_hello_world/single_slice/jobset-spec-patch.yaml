@@ -27,7 +27,6 @@ spec:
           spec:
             containers:
             - name: tpu-job 
-              image: gcr.io/jk-mlops-dev/maxtext-runner-image
               command:
               - python3 
               - pedagogical_examples/shardings.py

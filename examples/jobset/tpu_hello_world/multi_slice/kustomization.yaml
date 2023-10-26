@@ -16,6 +16,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: tpu-training
+images:
+- name: python
+  newName: gcr.io/jk-mlops-dev/maxtext-runner
+  newTag: latest
 
 resources:
 - ../../base_jobset
