@@ -28,7 +28,7 @@ Training, data processing, and other components of a training workload are packa
 
 [Vertex AI TensorBoard](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-introduction) is used to track and visualize training metrics.
 
-Cloud Monitoring is used to collect and analyze non-functional performance metrics, and Cloud Logging is used to manage logs produced by training workloads.
+[Cloud Monitoring](https://cloud.google.com/monitoring) is used to collect and analyze non-functional performance metrics, and [Cloud Logging](https://cloud.google.com/logging) is used to manage logs produced by training workloads.
 
 The GKE cluster is configured with Workload Identity. Training workloads impersonate an Identity and Access Management (IAM) service account to access Google Cloud services, such as Google Cloud Storage and Vertex AI TensorBoard.
 
