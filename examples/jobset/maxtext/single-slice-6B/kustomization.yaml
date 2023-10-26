@@ -30,7 +30,7 @@ configMapGenerator:
 - name: maxtext-parameters
   literals:
   - REPLICAS=1
-  - RUN_NAME=multilslice-6b-105
+  - RUN_NAME=singleslice-6b-105
   - BASE_OUTPUT_DIRECTORY=gs://jk-gke-aiml-repository/runs
   - DATASET_PATH=gs://jk-gke-aiml-repository/datasets
   - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/9050550799200944128
