@@ -6,7 +6,7 @@ This reference guide recommends using the JobSet and Kueue APIs as the preferred
 
 The examples are all based on the [MaxText](https://github.com/google/maxtext/tree/main) code base. MaxText is a high-performance, highly scalable, open-source LLM code base written in pure Python/Jax. It is optimized for Google Cloud TPUs and can achieve 55% to 60% MFU (model flops utilization). MaxText is designed to be a launching point for ambitious LLM projects in both research and production. It is also an excellent code base for demonstrating large-scale training design and operational patterns as attempted in this guide.
 
-Before you can run the examples, you need to package MaxText as a training container image. You also need to build auxiliary images used in some examples, including a container image that packages the [TensorBoar uploader](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-overview#upload-tb-logs) and copy the datasets required by the samples to your Cloud Storage data and artifact repository. We have automated this process with Cloud Build. 
+Before you can run the examples, you need to package MaxText in a training container image. You also need to build auxiliary images used in some examples, including a container image that packages the [TensorBoar uploader](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-overview#upload-tb-logs) and to copy the datasets required by the samples to your Cloud Storage data and artifact repository. We have automated this process with Cloud Build. 
 
 Modify the below settings to reflect your environment and submit the build:
 
