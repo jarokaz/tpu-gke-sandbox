@@ -49,7 +49,7 @@ To get pods in your namespace, including pods started by your workload:
 kubectl get pods -n <YOUR NAMESPACE>
 ```
 
-Note, that if your workload failed the above command will not return the workload's pods as the JobSet operator cleans up all failed jobs.
+Note, that if your workload failed than the above command will not return the workload's pods as the JobSet operator cleans up all failed jobs.
 
 If you want to review logs from the failed workload use [GKE Console](https://console.cloud.google.com/kubernetes/workload/overview).
 
@@ -82,7 +82,7 @@ The `single-slice-6B` and `multi-slice-6B` folders contain the Kustomize overlay
 To run the samples in your environment modify the `single-slice-6B\kustomization.yaml` and `multi-slice-6B\kustomization.yaml` as follows:
 
 - Update the `namespace` and `images` fields as described in the `tpu_hello_world` section
-- Update the `nameSuffix` field with a unique identifier of your workload. If you try to submit the workload using the same identifier as in any of the previous workloads you will receive an error.
+- Update the `nameSuffix` field with a unique identifier of your workload. If you try to submit a workload using the same identifier as in any of the previous workloads you will receive an error.
 - Update the values in the `configMapGenerator` 
   - REPLICAS - The number of TPU slices to use for the job. If set to a number higher than 1 a multi-slice job will be started
   - RUN_NAME - The MaxText run name. MaxText will use this value to name the folders for checkpoints and TensorBoard logs - see BASE_OUTPUT_DIRECTORY. If you want to restart from a previously set checkpoint set this to the run name used for the previous run. Although not required it may be convenient to use the same name as the `nameSuffix`
