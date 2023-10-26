@@ -3,7 +3,7 @@
 This reference guide compiles best practices, prescriptive guidance, and code samples for running large-scale TPU v4 and TPU v5e machine learning training workloads on Google Kubernetes Engine (GKE).
 The guide covers two main topics:
 - **Configuring a GKE based environment for large scale training on Cloud TPUs**
-  - This section describes how to configure a GKE cluster to optimize for running large-scale machine learning training workloads on **Cloud TPUs**.
+  - This section describes how to configure a GKE cluster to optimize for running large-scale machine learning training workloads on [Cloud TPUs](https://cloud.google.com/tpu).
 - **Defining, Submitting, and Monitoring Training Jobs**
   - This section provides guidance on how to define, submit, and manage training jobs using the Kubernetes [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://github.com/kubernetes-sigs/kueue) APIs.
 
@@ -30,7 +30,7 @@ Training, data processing, and other components of a training workload are packa
 
 Cloud Monitoring is used to collect and analyze non-functional performance metrics, and Cloud Logging is used to manage logs produced by training workloads.
 
-The GKE cluster is configured with Workload Identity. Training workloads impersonate an Identity and Access Management service account to access Google Cloud services, such as Google Cloud Storage and Vertex AI TensorBoard.
+The GKE cluster is configured with Workload Identity. Training workloads impersonate an Identity and Access Management (IAM) service account to access Google Cloud services, such as Google Cloud Storage and Vertex AI TensorBoard.
 
 
 ## Training workload processing 
@@ -39,6 +39,12 @@ The following diagram illustrates the process of submitting and processing train
 
 ![training workloads](/images/workload-processing.png)
 
+We suggest using the [Kubernetes JobSet API](https://github.com/kubernetes-sigs/jobset) as the preferred method of coordinating large-scale distributed machine learning training workloads on Kubernetes. When combined with the [Kubernetes Kueue job queuing API](https://github.com/kubernetes-sigs/kueue), it provides flexible and comprehensive training job orchestration.
+
+This guide describes a configuration that consists of a single [ClusterQueue](https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/) and multiple [LocalQueues](https://kueue.sigs.k8s.io/docs/concepts/local_queue/). This topology supports managing and prioritizing jobs submitted by multiple teams using a variety of tools.
+
+
+## Environment setup
 
 Provisioning of the environment has been automated with Terraform. The Terraform configuration can be found in the `env_setup/terraform` folder. Before applying the configuration you need to select an existing GCP project or create a new one and enable the following services:
 
