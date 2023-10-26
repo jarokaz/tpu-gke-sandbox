@@ -176,7 +176,7 @@ export KUEUE_API_VERSION=v0.4.2
 
 Note, that we only set a subset of variables exposed by the Terraform configuration. For the other ones we use the defaults. If you want to change the default values of other variables you need to update the `env_setup\cloudbuild.provision.yaml` file and the below `gcloud builds submit` command. 
 
-The Terraform configuration maintains the configuration state in  Google Cloud Storage. Set the following variables to the name of a GCS bucket and a subfolder in the bucket where you want to store the state. 
+The Terraform configuration maintains its configuration state in  Google Cloud Storage. Set the following variables to the name of a GCS bucket and a subfolder in the bucket where you want to store the state. 
 
 ```
 export TF_STATE_BUCKET=jk-mlops-dev-tf-state
