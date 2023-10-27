@@ -46,7 +46,7 @@ variable "artifact_repository_bucket_name" {
 
 variable "force_destroy" {
     description = "Force destroy flag for the GCS bucket"
-    default = false
+    default = true 
 }
 
 variable "network_name" {
