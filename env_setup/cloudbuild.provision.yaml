@@ -32,7 +32,7 @@ steps:
           echo tpu_namespace=$_NAMESPACE
           echo tpu_type=$_TPU_TYPE
           echo num_tpu_pools=$_NUM_TPU_POOLS
-          echo num_of_chips=$NUM_OF_CHIPS
+          echo num_of_chips=$_NUM_OF_CHIPS
           echo jobset_api_version=$_JOBSET_API_VERSION
           echo kueue_api_version=$_KUEUE_API_VERSION
 
