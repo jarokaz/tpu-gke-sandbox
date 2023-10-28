@@ -31,9 +31,9 @@ gcloud config set compute/zone $ZONE
 ## Provision a single slice
 
 ```
-TPU_PREFIX=jk-v4-16
+TPU_PREFIX=jk-v4-8
 QR_ID=$TPU_PREFIX
-ACCELERATOR_TYPE=v4-16
+ACCELERATOR_TYPE=v4-8
 RUNTIME=tpu-ubuntu2204-base
 
 gcloud alpha compute tpus queued-resources create $QR_ID \
