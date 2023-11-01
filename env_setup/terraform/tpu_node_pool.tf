@@ -44,7 +44,7 @@ resource "google_container_node_pool" "tpu_node_pool" {
   cluster            = module.gke.cluster_id 
   name               = each.key 
   node_locations     = [var.zone]
-  initial_node_count = var.enable_tpu_autoscaling ? 0 : local.tpu_types[var.tpu_type][4]
+  initial_node_count = var.enable_tpu_autoscaling ? 0 : local.tpu_types[var.tpu_type][1]
 
   dynamic autoscaling {
     for_each = var.enable_tpu_autoscaling ? [1] : []
