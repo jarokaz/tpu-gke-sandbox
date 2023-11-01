@@ -1,6 +1,7 @@
 #  Running TPU training workloads on GKE
 
-This reference guide compiles best practices, prescriptive guidance, and code samples for running large-scale TPU v4 and TPU v5e machine learning training workloads on Google Kubernetes Engine (GKE).
+This reference guide compiles best practices, prescriptive guidance, and code samples for running large-scale machine learning training workloads with [TPU v4 and TPU v5e on Google Kubernetes Engine (GKE)](https://cloud.google.com/tpu/docs/tpus-in-gke).
+
 The guide covers two main topics:
 - **Configuring a GKE based environment for large scale training on Cloud TPUs**
   - This section describes how to configure a GKE cluster to optimize it for running large-scale machine learning training workloads on [Cloud TPUs](https://cloud.google.com/tpu).
@@ -11,26 +12,27 @@ We also include Terraform configuration for provisioning the training environmen
 
 
 
-## The training environment
+## Architecture of the training environment
 
 The diagram below depicts a high-level architecture of the training environment.
 
 
 ![arch](/images/training-cluster.png)
 
-The foundation of the environment is a regional, VPC-native GKE cluster. The cluster has two types of node pools: a single node pool with CPU-only nodes and several [Multi-host TPU node pools](https://cloud.google.com/kubernetes-engine/docs/concepts/tpus).
+The foundation of the environment is a regional, VPC-native GKE cluster. The cluster has two types of node pools: 
+- A single node pool with CPU-only nodes and 
+- Several [Multi-host TPU node pools](https://cloud.google.com/kubernetes-engine/docs/concepts/tpus)
 
 This cluster topology supports running both [single-slice and multi-slice TPU](https://cloud.google.com/tpu/docs/multislice-introduction) training jobs.
 
-Training datasets and artifacts produced by training jobs (such as logs and checkpoints) are saved in Google Cloud Storage.
+Following are the components supporting the environment:
 
-Training, data processing, and other components of a training workload are packaged as Docker container images and managed in Google Cloud Container Registry.
-
-[Vertex AI TensorBoard](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-introduction) is used to track and visualize training metrics.
-
-[Cloud Monitoring](https://cloud.google.com/monitoring) is used to collect and analyze non-functional performance metrics, and [Cloud Logging](https://cloud.google.com/logging) is used to manage logs produced by training workloads.
-
-Training workloads impersonate an Identity and Access Management (IAM) service accounts to access Google Cloud services, such as Google Cloud Storage and Vertex AI TensorBoard.
+- [Cloud Storage](https://cloud.google.com/storage) buckets for saving training datasets and artifacts produced by training jobs (such as logs and checkpoints)
+- [Cloud Artifact Registry](https://cloud.google.com/artifact-registry) for packaging and managing the training, data processing, and other components of a training workload as Docker container images.
+- [Vertex AI TensorBoard](https://cloud.google.com/vertex-ai/docs/experiments/tensorboard-introduction) for tracking and visualizing training metrics.
+- [Cloud Monitoring](https://cloud.google.com/monitoring) for collecting and analyzing non-functional performance metrics
+- [Cloud Logging](https://cloud.google.com/logging) for managing logs produced by training workloads.
+- Training workloads [impersonate an Identity and Access Management (IAM) service accounts](https://cloud.google.com/iam/docs/service-account-impersonation) to access Google Cloud services, such as Cloud Storage and Vertex AI TensorBoard.
 
 
 ## Training workload processing 
@@ -62,44 +64,111 @@ To submit a JobSet-defined workload, you need to create a YAML JobSet resource d
 - Using  [xpk](https://github.com/google/maxtext/tree/main/xpk), which provides an easy-to-use Python-based CLI.
 
 
-## Environment setup
+## Provision infrastructure
 
-The provisioning of the environment described in the previous section has been automated with [Terraform](https://cloud.google.com/docs/terraform) and [Cloud Build](https://cloud.google.com/build).
+The provisioning of the environment described in the previous section has been automated with [Terraform](https://cloud.google.com/docs/terraform) and [Cloud Build](https://cloud.google.com/build). The following are the tasks performed by the Terraform configuration:
 
-The Terraform configuration can be found in the `env_setup/terraform` folder. Before applying the configuration, you need to select an existing GCP project or create a new one. You will also need to enable the following services:
+- [ ] Creates a network and a subnet for a VPC-native GKE cluster.
+- [ ] Creates a VPC-native cluster.
+- [ ] Creates a node pool with nodes equipped with CPUs only.
+- [ ] Creates a specified number of multi-host TPU node pools.
+- [ ] Creates an IAM service account for Workload Identity and an IAM service account to be used as a custom node pool service account.
+- [ ] Assigns a specified set of roles to these service accounts.
+- [ ] Configures the cluster for Workload Identity.
+- [ ] Creates a Google Cloud Storage bucket.
+- [ ] Adds the service accounts to `roles/storage.legacyBucketReader` bucket level permissions.
+
+<div class=\"alert alert-block alert-warning\">
+  <p>
+  A few things to note:
+
+  1. You need to be a project owner to set up the environment.
+  2. Your project must have sufficient [quota to provision TPU resources](https://cloud.google.com/tpu/docs/quota). Else, you can (request for a higher quota limit](https://cloud.google.com/docs/quota/view-manage#requesting_higher_quota).
+  </p>
+</div>
 
 
+You can use [Cloud Shell](https://cloud.google.com/shell/docs/using-cloud-shell) to start and monitor the setup process. Click on the link below to navigate to Cloud Shell and clone the repo.
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/jarokaz/tpu-gke-sandbox&cloudshell_git_branch=main&tutorial=README.md">
+    <img alt="Open in Cloud Shell" src="http://gstatic.com/cloudssh/images/open-btn.png">
+</a>
+
+To set up the environment execute the following steps.
+
+### Select a Google Cloud project
+
+ - In the Google Cloud Console, on the project selector page, [select or create a Google Cloud project](https://console.cloud.google.com/projectselector2/home/dashboard?_ga=2.77230869.1295546877.1635788229-285875547.1607983197&_gac=1.82770276.1635972813.Cj0KCQjw5oiMBhDtARIsAJi0qk2ZfY-XhuwG8p2raIfWLnuYahsUElT08GH1-tZa28e230L3XSfYewYaAlEMEALw_wcB). 
+
+
+- Clone the GitHub repo. Skip this step if you have launched through Cloud Shell link.
+
+```bash
+git clone https://github.com/jarokaz/tpu-gke-sandbox.git
 ```
-PROJECT_ID=jk-mlops-dev
 
-gcloud config set project $PROJECT_ID
+### Run environment provisioning job
 
-gcloud services enable \
-cloudbuild.googleapis.com \
-compute.googleapis.com \
-cloudresourcemanager.googleapis.com \
-iam.googleapis.com \
-container.googleapis.com \
-cloudtrace.googleapis.com \
-iamcredentials.googleapis.com \
-monitoring.googleapis.com \
-logging.googleapis.com \
-aiplatform.googleapis.com \
-config.googleapis.com 
+As mentioned earlier, environment provisioning is done using a Cloud Build job that runs Terraform manifests and environment setup steps. The Terraform configuration can be found in the [`env_setup/terraform`](env_setup/terraform) folder. The Terraform configuration supports a number of configurable inputs which are set using the included [`env_setup/vars.env`](env_setup/terraform) file. Cloud Build provides Terraform the values set in this file to configure Terraform variables in [`env_setup/terraform/variables.tf`](env_setup/terraform/variables.tf). The configuration uses Google Cloud Storage as the backend for maintaining Terraform state.
 
+To proceed, set the below environment variables in [`env_setup/vars.env`](env_setup/vars.env) to reflect your environment. By default, you will only need to provide your `PROJECT_ID`; replace "YOUR_PROJECT_ID" with the project ID of your Google Cloud project.
+
+```bash
+export PROJECT_ID=YOUR_PROJECT_ID
+export REGION=us-central2
+export ZONE=us-central2-b
+export NETWORK_NAME=${PROJECT_ID}-network
+export SUBNET_NAME=${PROJECT_ID}-subnet
+export CLUSTER_NAME=gke-tpu-training-cluster
+export NAMESPACE=tpu-training
+export TPU_TYPE=v4-16
+export NUM_TPU_POOLS=1
+export NUM_OF_CHIPS=8
+
+export TENSORBOARD_REGION=us-central1
+export ARTIFACT_REGISTRY_NAME=gke-tpu-training
+export ARTIFACT_REPOSITORY_BUCKET_NAME=${PROJECT_ID}-aiml-repository
+
+export JOBSET_API_VERSION="v0.2.3"
+export KUEUE_API_VERSION="v0.4.2"
+
+export TF_STATE_BUCKET=${PROJECT_ID}-tf-state
+export TF_STATE_PREFIX=gke-tpu-training-environment
 ```
 
-The following are the tasks performed by the Terraform configuration:
-- Creates a network and a subnet for a VPC-native GKE cluster.
-- Creates a VPC-native cluster.
-- Creates a node pool with nodes equipped with CPUs only.
-- Creates a specified number of multi-host TPU node pools.
-- Creates an IAM service account for Workload Identity and an IAM service account to be used as a custom node pool service account.
-- Assigns a specified set of roles to these service accounts.
-- Configures the cluster for Workload Identity.
-- Creates a Google Cloud Storage bucket.
-- Adds the service accounts to `roles/storage.legacyBucketReader` bucket level permissions.
+- `PROJECT_ID` - your project ID
+- `REGION` - the region for a GKE cluster network (default: `us-central2`)
+- `ZONE` - the zone for your GKE cluster (default: `us-central2-b`)
+- `NETWORK_NAME` - the name for the network 
+- `SUBNET_NAME` - the name for the subnet
+- `CLUSTER_NAME` - the name of your GKE cluster (default: `gke-tpu-training-cluster`)
+- `NAMESPACE` - the kubernetes namespace for TPU workloads (default: `tpu-training`)
+- `TPU_TYPE` - the TPU type for the Triton GPU node pool (default: `v4-16`)
+- `NUM_TPU_POOLS` - the number of TPU slices to create (default: `1`)
+- `NUM_OF_CHIPS` - Number of chips based on the [selected TPU type](https://cloud.google.com/tpu/docs/supported-tpu-configurations) and number of TPU pools
+- `TENSORBOARD_REGION` - The region for a Vertex TensorBoard instance (default: `us-central1`)
+- `ARTIFACT_REPOSITORY_BUCKET_NAME` - the name of the model artifacts repository Cloud Storage bucket
+- `ARTIFACT_REGISTRY_NAME` - the name of Artifact Registry repository to manage docker images
+- `JOBSET_API_VERSION` - the version of the (JobSet API)(https://github.com/kubernetes-sigs/jobset/releases) to download and setup
+- `KUEUE_API_VERSION` - the version of the (Kueue API)(https://github.com/kubernetes-sigs/kueue/releases) to download and setup
+- `TF_STATE_BUCKET` - the name of Cloud Storage bucket for Terraform to maintains configuration state
+- `TF_STATE_PREFIX` - the object prefix for Terraform to maintains configuration state in Cloud Storage bucket
 
+
+# 
+
+Start provisioning by using [Cloud Build job](env_setup/cloudbuild.provision.yaml) to run Terraform and provision resources, installs the **JobSet** and **Kueue** APIs and configures Kueue resources and finalizes the setup. To start provisioning execute the following command:
+
+```bash
+./env_setup/build.sh
+```
+
+Navigate to the Cloud Build logs using the link displayed on Cloud Shell or go to the [Cloud Build page on the Cloud console](https://console.cloud.google.com/cloud-build).
+
+
+#### Input variables in the Terraform configuration 
+
+Note, that we only set a subset of variables in [`env_setup/vars.env`](env_setup/vars.env) exposed by the Terraform configuration. For the other ones we use the defaults. If you want to change the default values of other variables you need to update the [`env_setup\cloudbuild.provision.yaml`](env_setup\cloudbuild.provision.yaml) file and the `gcloud builds submit` command in [`env_setup\build.sh`](env_setup\build.sh) file. 
 
 The Terraform configuration supports the following input variables:
 
@@ -154,82 +223,15 @@ The `tpu_type` variable is a name of a TPU slice configuration as defined in the
 | v4-4096| tpu-v4-podslice | 8x16x16 | ct4p-hightpu-4t | 512 | 4 |
 
 
-The Terraform configuration can be applied directly with the `terraform` CLI. We have also provided a **Cloud Build** configuration - `env_setup/cloudbuild.provision.yaml` - that, in addition to applying the Terraform configuration, installs the **JobSet** and **Kueue** APIs and configures Kueue resources. We recommend using **Cloud Build** to provision and configure the environment in a single step.
+## Training workloads examples
 
-Make sure that the Cloud Build service account in your project has the right permisions to perform actions in the Terraform configuration.
-
-Before running **Cloud Build** you need to update the following environment variables to reflect your environment
-
-```
-export PROJECT_ID=jk-mlops-dev
-export REGION=us-central2
-export TENSORBOARD_REGION=us-central1
-export ZONE=us-central2-b
-export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
-export NETWORK_NAME=jk-gke-network
-export SUBNET_NAME=jk-gke-subnet
-export CLUSTER_NAME=jk-tpu-training-cluster
-export NAMESPACE=tpu-training
-export TPU_TYPE=v4-32
-export NUM_TPU_POOLS=2
-export NUM_OF_CHIPS=32
-
-export JOBSET_API_VERSION="v0.2.3"
-export KUEUE_API_VERSION=v0.4.2
-```
-
-Note, that we only set a subset of variables exposed by the Terraform configuration. For the other ones we use the defaults. If you want to change the default values of other variables you need to update the `env_setup\cloudbuild.provision.yaml` file and the below `gcloud builds submit` command. 
-
-The Terraform configuration maintains its configuration state in  Google Cloud Storage. Set the following variables to the name of a GCS bucket and a subfolder in the bucket where you want to store the state. 
-
-```
-export TF_STATE_BUCKET=jk-mlops-dev-tf-state
-export TF_STATE_PREFIX=gke-tpu-training-environment
-```
-
-To start provisioning execute the following command:
-
-```
-gcloud builds submit \
-  --config cloudbuild.provision.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_TENSORBOARD_REGION=$TENSORBOARD_REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS,_NUM_OF_CHIPS=$NUM_OF_CHIPS,_JOBSET_API_VERSION=$JOBSET_API_VERSION,_KUEUE_API_VERSION=$KUEUE_API_VERSION \
-  --timeout "2h" \
-  --machine-type=e2-highcpu-32 \
-  --quiet
-```
+The [`examples`](examples/) folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads. Refer to the [README](examples/README.md) in this folder for detailed instructions.
 
 
 ## Environment clean up
 
-If you want to destroy the environment and clean up all the provisioned resources you can use **Cloud Build** with the `env_setup/cloudbuild.destroy.yaml` configuration.
+To destroy the environment and clean up all the provisioned resources, run the [Cloud Build job](env_setup/cloudbuild.destroy.yaml) that runs Terraform to clean up the resources. The job refers to the environment variables in [`env_setup/vars.env`](env_setup/vars.env) that was used for provisioning the environment. To start cleaning up the provisioned resources execute the following command:
 
+```bash
+./env_setup/destroy.sh
 ```
-export TF_STATE_BUCKET=jk-mlops-dev-tf-state
-export TF_STATE_PREFIX=gke-tpu-training-environment
-
-export PROJECT_ID=jk-mlops-dev
-export REGION=us-central2
-export TENSORBOARD_REGION=us-central1
-export ZONE=us-central2-b
-export ARTIFACT_REPOSITORY_BUCKET_NAME=jk-gke-aiml-repository
-export NETWORK_NAME=jk-gke-network
-export SUBNET_NAME=jk-gke-subnet
-export CLUSTER_NAME=jk-tpu-training-cluster
-export TPU_TYPE=v4-32
-export NUM_TPU_POOLS=2
-export NAMESPACE=tpu-training
-
-gcloud builds submit \
-  --config cloudbuild.destroy.yaml \
-  --substitutions _TF_STATE_BUCKET=$TF_STATE_BUCKET,_TF_STATE_PREFIX=$TF_STATE_PREFIX,_REGION=$REGION,_TENSORBOARD_REGION=$TENSORBOARD_REGION,_ZONE=$ZONE,_ARTIFACT_REPOSITORY_BUCKET_NAME=$ARTIFACT_REPOSITORY_BUCKET_NAME,_NETWORK_NAME=$NETWORK_NAME,_SUBNET_NAME=$SUBNET_NAME,_CLUSTER_NAME=$CLUSTER_NAME,_NAMESPACE=$NAMESPACE,_TPU_TYPE=$TPU_TYPE,_NUM_TPU_POOLS=$NUM_TPU_POOLS \
-  --timeout "2h" \
-  --machine-type=e2-highcpu-32 \
-  --quiet
-
-```
-
-
-
-## Training workloads examples
-
-The `examples` folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads. Refer to the README in this folder for detailed instructions.

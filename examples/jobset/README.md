@@ -87,7 +87,7 @@ To run the samples in your environment modify the `single-slice-6B\kustomization
   - REPLICAS - The number of TPU slices to use for the job. If set to a number higher than 1 a multi-slice job will be started
   - RUN_NAME - The MaxText run name. MaxText will use this value to name the folders for checkpoints and TensorBoard logs - see BASE_OUTPUT_DIRECTORY. If you want to restart from a previously set checkpoint set this to the run name used for the previous run. Although not required it may be convenient to use the same name as the `nameSuffix`
   - BASE_OUTPUT_DIRECTORY - The base Cloud Storage location for checkpoints and logs.
-  - DATASET_PATH - The base Cloud Storage location for the C4 dataset. Do not include the `c4` folder name. E.g. if the `c4` datasaet was copied to `gs:\\bucket_name\datasets` set the DATASET_PATH to this URI.
+  - DATASET_PATH - The base Cloud Storage location for the C4 dataset. Do not include the `c4` folder name. E.g. if the `c4` dataset was copied to `gs:\\bucket_name\datasets` set the DATASET_PATH to this URI.
   - TENSORBOARD_NAME - The full name of the TensorBoard instance you want to use for tracking. In the format `projects\YOUR_PROJECT_NUMBER\locations\YOUR_LOCATON\tensorboard\YOUR_TENSORBOARD_ID`
   - ARGS - Any additional parameters you want to pass to the MaxText trainer. Refer to the below notes and the MaxText documentation for more info
   - LIBTPU_INIT_ARGS - LIBTPU_INIT_ARGS is an environmental variable that controls `libtpu` including XLA compiler. Refer to MaxText documentation for more info.
