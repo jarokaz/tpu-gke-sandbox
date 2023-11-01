@@ -78,14 +78,11 @@ The provisioning of the environment described in the previous section has been a
 - [ ] Creates a Google Cloud Storage bucket.
 - [ ] Adds the service accounts to `roles/storage.legacyBucketReader` bucket level permissions.
 
-<div class=\"alert alert-block alert-warning\">
-  <p>
-  A few things to note:
-
-  1. You need to be a project owner to set up the environment.
-  2. Your project must have sufficient [quota to provision TPU resources](https://cloud.google.com/tpu/docs/quota). Else, you can (request for a higher quota limit](https://cloud.google.com/docs/quota/view-manage#requesting_higher_quota).
-  </p>
-</div>
+> [!NOTE]  
+>  A few things to note:
+>
+>  1. You need to be a project owner to set up the environment.
+>  2. Your project must have sufficient [quota to provision TPU resources](https://cloud.google.com/tpu/docs/quota). Else, you can [request for a higher quota limit](https://cloud.google.com/docs/quota/view-manage#requesting_higher_quota).
 
 
 You can use [Cloud Shell](https://cloud.google.com/shell/docs/using-cloud-shell) to start and monitor the setup process. Click on the link below to navigate to Cloud Shell and clone the repo.
@@ -111,7 +108,8 @@ git clone https://github.com/jarokaz/tpu-gke-sandbox.git
 
 As mentioned earlier, environment provisioning is done using a Cloud Build job that runs Terraform manifests and environment setup steps. The Terraform configuration can be found in the [`env_setup/terraform`](env_setup/terraform) folder. The Terraform configuration supports a number of configurable inputs which are set using the included [`env_setup/vars.env`](env_setup/terraform) file. Cloud Build provides Terraform the values set in this file to configure Terraform variables in [`env_setup/terraform/variables.tf`](env_setup/terraform/variables.tf). The configuration uses Google Cloud Storage as the backend for maintaining Terraform state.
 
-To proceed, set the below environment variables in [`env_setup/vars.env`](env_setup/vars.env) to reflect your environment. By default, you will only need to provide your `PROJECT_ID`; replace "YOUR_PROJECT_ID" with the project ID of your Google Cloud project.
+> [!IMPORTANT] 
+> To proceed, set the below environment variables in [`env_setup/vars.env`](env_setup/vars.env) to reflect your environment. By default, you will only need to provide your `PROJECT_ID`; replace "YOUR_PROJECT_ID" with the project ID of your Google Cloud project.
 
 ```bash
 export PROJECT_ID=YOUR_PROJECT_ID
