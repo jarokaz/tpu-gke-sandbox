@@ -35,7 +35,16 @@ steps:
           echo num_of_chips=$_NUM_OF_CHIPS
           echo jobset_api_version=$_JOBSET_API_VERSION
           echo kueue_api_version=$_KUEUE_API_VERSION
-
+  - id: "gcs"
+    name: "gcr.io/cloud-builders/gcloud"
+    waitFor: ["-"]
+    entrypoint: "sh"
+    args:
+      - "-xe"
+      - "-c"
+      - |
+        [[ $(gsutil ls | grep "gs://$_TF_STATE_BUCKET/") ]] || \
+        gsutil mb -p ${PROJECT_ID} gs://$_TF_STATE_BUCKET
   - id: 'tf init'
     name: 'hashicorp/terraform'
     entrypoint: 'sh'

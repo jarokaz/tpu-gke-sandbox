@@ -78,7 +78,7 @@ The provisioning of the environment described in the previous section has been a
 - [ ] Creates a Google Cloud Storage bucket.
 - [ ] Adds the service accounts to `roles/storage.legacyBucketReader` bucket level permissions.
 
-> [!NOTE]  
+> [!WARNING]
 >  A few things to note:
 >
 >  1. You need to be a project owner to set up the environment.
@@ -158,6 +158,7 @@ export TF_STATE_PREFIX=gke-tpu-training-environment
 Start provisioning by using [Cloud Build job](env_setup/cloudbuild.provision.yaml) to run Terraform and provision resources, installs the **JobSet** and **Kueue** APIs and configures Kueue resources and finalizes the setup. To start provisioning execute the following command:
 
 ```bash
+export PROJECT_ID=YOUR_PROJECT_ID
 ./env_setup/build.sh
 ```
 

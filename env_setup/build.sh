@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Setting variables for tutorial using vars.env
+# Setting variables using vars.env 
+dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+pushd ${dir}
 source vars.env
 
 [[ ! "${PROJECT_ID}" ]] && echo -e "Please export PROJECT_ID variable (\e[95mexport PROJECT_ID=<YOUR_PROJECT_ID>\e[0m)\nExiting." && exit 0
@@ -40,7 +42,7 @@ config.googleapis.com && \
 
 # Assign permissions to Cloud Build Service Account
 echo -e "\e[95mAssigning Cloudbuild Service Account roles/owner in ${PROJECT_ID}\e[0m" && \
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" --member serviceAccount:"${TF_CLOUDBUILD_SA}" --role roles/owner && \
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" --member serviceAccount:"${TF_CLOUDBUILD_SA}" --role roles/owner --condition None && \
 
 echo -e "\e[95mStarting Cloudbuild to create infrastructure...\e[0m" && \
 
