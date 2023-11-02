@@ -22,7 +22,7 @@ In the [`tpu_hello_world`](tpu_hello_world/) folder you will find examples of ex
 
 We use `envsubst` tool to adapt the examples to your environment the `namespace` and `images` fields in the `kustomization.template.yaml` files to reference names used in your configuration. 
 - `namespace` field refers to the Kubernetes namespace created during setup (`$NAMESPACE` in [`vars.env`](../../env_setup/vars.env))
-- As your recall, a Kueue LocalQueue used to admit workloads has been provisioned in this namespace. The `newName` property of the `images` field with the name of your MaxText training container image (`$MAX_TEXT_IMAGE_NAME` in [`examples.env`](../examples.env)]).
+- As your recall, a Kueue LocalQueue used to admit workloads has been provisioned in this namespace. The `newName` property of the `images` field with the name of your MaxText training container image (`$MAX_TEXT_IMAGE_NAME` in [`examples.env`](../examples.env)).
 
 ### Run jobs
 
@@ -84,13 +84,13 @@ or
 kubectl delete -k multi_slice
 ```
 
-## MaxText pretraining examples
+## MaxText pre-training examples
 
-The `maxtext` folder contains examples of pretraining a MaxText 6.5 billion parameters model on the C4 dataset.
+The [`maxtext`](maxtext/) folder contains examples of pre-training a MaxText 6.5 billion parameters model on the [English C4 dataset](https://www.tensorflow.org/datasets/catalog/c4#c4en_default_config), downloaded as part of [prerequisites](../README.md#prerequisites-for-running-examples) to running examples.
 
-The `maxtext/base_maxtext` folder contains the base configuration of the JobSet workload. If you review the `maxtext\base_maxtext\jobset-spec-patch.yaml` you will notice that a JobSet resource is configured with two job templates. One (named `slice`) starts the MaxText trainer. The other (named `tensorboard`) starts the TensorBoard uploader. The runtime parameters to the MaxText trainer and the TensorBoard uploader are passed through environment variables that are set through the `maxtext-parameters` ConfigMap.
+The `maxtext/base_maxtext` folder contains the base configuration of the JobSet workload. If you review the [`maxtext/base_maxtext/jobset-spec-patch.yaml`](maxtext/base_maxtext/jobset-spec-patch.yaml) you will notice that a JobSet resource is configured with two job templates. One (named `slice`) starts the MaxText trainer and the other (named `tensorboard`) starts the TensorBoard uploader. The runtime parameters to the MaxText trainer and the TensorBoard uploader are passed through environment variables that are set through the `maxtext-parameters` ConfigMap.
 
-The `single-slice-6B` and `multi-slice-6B` folders contain the Kustomize overlays that customize the base MaxText JobSet configuration for running a single slice and multislice training workloads respectively.
+The [`single-slice-6B`](maxtext/single-slice-6B/) and [`multi-slice-6B`](maxtext/multi-slice-6B/) folders contain the Kustomize overlays that customize the base MaxText JobSet configuration for running a single slice and multislice training workloads respectively.
 
 To run the samples in your environment modify the `single-slice-6B\kustomization.yaml` and `multi-slice-6B\kustomization.yaml` as follows:
 
