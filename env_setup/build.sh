@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,13 +43,14 @@ config.googleapis.com && \
 
 # Assign permissions to Cloud Build Service Account
 echo -e "\e[95mAssigning Cloudbuild Service Account roles/owner in ${PROJECT_ID}\e[0m" && \
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" --member serviceAccount:"${TF_CLOUDBUILD_SA}" --role roles/owner --condition None && \
+# gcloud projects add-iam-policy-binding "${PROJECT_ID}" --member serviceAccount:"${TF_CLOUDBUILD_SA}" --role roles/owner --condition None && \
 
-echo -e "\e[95mStarting Cloudbuild to create infrastructure...\e[0m" && \
+echo -e "\e[95mCreating Google Cloud Cloudbuild to create infrastructure...\e[0m" && \
 
-[[ $(gcloud artifacts repositories list | grep ${ARTIFACT_REGISTRY_NAME}) ]] || \
+[[ $(gcloud artifacts repositories list --location=$REGION --format="value(name)" | grep ${ARTIFACT_REGISTRY_NAME}) ]] || \
 gcloud artifacts repositories create ${ARTIFACT_REGISTRY_NAME} --repository-format=docker --location=$REGION --description="Repo for platform installer container images built by Cloud Build." && \
 
+echo -e "\e[95mStarting Cloudbuild to create infrastructure...\e[0m" && \
 
 gcloud builds submit \
   --config cloudbuild.provision.yaml \

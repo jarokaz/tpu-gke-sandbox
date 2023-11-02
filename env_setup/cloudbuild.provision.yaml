@@ -35,16 +35,15 @@ steps:
           echo num_of_chips=$_NUM_OF_CHIPS
           echo jobset_api_version=$_JOBSET_API_VERSION
           echo kueue_api_version=$_KUEUE_API_VERSION
-  - id: "gcs"
-    name: "gcr.io/cloud-builders/gcloud"
-    waitFor: ["-"]
-    entrypoint: "sh"
+  - id: create tf state bucket
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'sh'
     args:
-      - "-xe"
-      - "-c"
+      - -c
       - |
-        [[ $(gsutil ls | grep "gs://$_TF_STATE_BUCKET/") ]] || \
-        gsutil mb -p ${PROJECT_ID} gs://$_TF_STATE_BUCKET
+          if ! [ $(gsutil ls | grep "gs://$_TF_STATE_BUCKET/") ]; then 
+            gsutil mb -p ${PROJECT_ID} gs://$_TF_STATE_BUCKET
+          fi
   - id: 'tf init'
     name: 'hashicorp/terraform'
     entrypoint: 'sh'
@@ -72,7 +71,8 @@ steps:
         -var=artifact_repository_bucket_name=$_ARTIFACT_REPOSITORY_BUCKET_NAME \
         -var=tpu_type=$_TPU_TYPE \
         -var=num_tpu_pools=$_NUM_TPU_POOLS \
-        -var=zone=$_ZONE
+        -var=zone=$_ZONE \
+        -var=gke_sa_name=rt-gke-sa
 
   - id: 'tf apply'
     name: 'hashicorp/terraform'
@@ -92,7 +92,8 @@ steps:
         -var=artifact_repository_bucket_name=$_ARTIFACT_REPOSITORY_BUCKET_NAME \
         -var=tpu_type=$_TPU_TYPE \
         -var=num_tpu_pools=$_NUM_TPU_POOLS \
-        -var=zone=$_ZONE
+        -var=zone=$_ZONE \
+        -var=gke_sa_name=rt-gke-sa
 
   - id: 'Deploy JobSet'
     name: gcr.io/google.com/cloudsdktool/cloud-sdk 
