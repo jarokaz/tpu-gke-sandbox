@@ -162,7 +162,9 @@ export PROJECT_ID=YOUR_PROJECT_ID
 ./env_setup/build.sh
 ```
 
-Navigate to the Cloud Build logs using the link displayed on Cloud Shell or go to the [Cloud Build page on the Cloud console](https://console.cloud.google.com/cloud-build).
+Navigate to the Cloud Build logs using the link displayed on Cloud Shell or go to the [Cloud Build page on the Cloud console](https://console.cloud.google.com/cloud-build). You should see similar page when the environment provision job is completed successfully:
+
+![provision](/images/cloudbuild_provision.jpg)
 
 
 #### Input variables in the Terraform configuration 
@@ -227,10 +229,14 @@ The `tpu_type` variable is a name of a TPU slice configuration as defined in the
 The [`examples`](examples/) folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads. Refer to the [README](examples/README.md) in this folder for detailed instructions.
 
 
-## Environment clean up
+## Environment cleanup
 
 To destroy the environment and clean up all the provisioned resources, run the [Cloud Build job](env_setup/cloudbuild.destroy.yaml) that runs Terraform to clean up the resources. The job refers to the environment variables in [`env_setup/vars.env`](env_setup/vars.env) that was used for provisioning the environment. To start cleaning up the provisioned resources execute the following command:
 
 ```bash
 ./env_setup/destroy.sh
 ```
+
+You should see similar page when the environment cleanup job is completed successfully:
+
+![destroy](/images/cloudbuild_destroy.jpg)
