@@ -104,7 +104,7 @@ To set up the environment execute the following steps.
 git clone https://github.com/jarokaz/tpu-gke-sandbox.git
 ```
 
-### Run environment provisioning job
+### Configure environment
 
 As mentioned earlier, environment provisioning is done using a Cloud Build job that runs Terraform manifests and environment setup steps. The Terraform configuration can be found in the [`env_setup/terraform`](env_setup/terraform) folder. The Terraform configuration supports a number of configurable inputs which are set using the included [`env_setup/vars.env`](env_setup/terraform) file. Cloud Build provides Terraform the values set in this file to configure Terraform variables in [`env_setup/terraform/variables.tf`](env_setup/terraform/variables.tf). The configuration uses Google Cloud Storage as the backend for maintaining Terraform state.
 
@@ -153,7 +153,7 @@ export TF_STATE_PREFIX=gke-tpu-training-environment
 - `TF_STATE_PREFIX` - the object prefix for Terraform to maintains configuration state in Cloud Storage bucket
 
 
-# 
+### Run environment provisioning job
 
 Start provisioning by using [Cloud Build job](env_setup/cloudbuild.provision.yaml) to run Terraform and provision resources, installs the **JobSet** and **Kueue** APIs and configures Kueue resources and finalizes the setup. To start provisioning execute the following command:
 
@@ -169,7 +169,7 @@ Navigate to the Cloud Build logs using the link displayed on Cloud Shell or go t
 
 #### Input variables in the Terraform configuration 
 
-Note, that we only set a subset of variables in [`env_setup/vars.env`](env_setup/vars.env) exposed by the Terraform configuration. For the other ones we use the defaults. If you want to change the default values of other variables you need to update the [`env_setup\cloudbuild.provision.yaml`](env_setup\cloudbuild.provision.yaml) file and the `gcloud builds submit` command in [`env_setup\build.sh`](env_setup\build.sh) file. 
+Note that we only set a subset of variables in [`env_setup/vars.env`](env_setup/vars.env) exposed by the Terraform configuration. For the other ones we use the defaults. If you want to change the default values of other variables you need to update the [`env_setup\cloudbuild.provision.yaml`](env_setup\cloudbuild.provision.yaml) file and the `gcloud builds submit` command in [`env_setup\build.sh`](env_setup\build.sh) file. 
 
 The Terraform configuration supports the following input variables:
 
@@ -228,8 +228,10 @@ The `tpu_type` variable is a name of a TPU slice configuration as defined in the
 
 The [`examples`](examples/) folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads. Refer to the [README](examples/README.md) in this folder for detailed instructions.
 
+### TODO: Examples navigation
 
-## Environment cleanup
+
+## Cleanup Environment 
 
 To destroy the environment and clean up all the provisioned resources, run the [Cloud Build job](env_setup/cloudbuild.destroy.yaml) that runs Terraform to clean up the resources. The job refers to the environment variables in [`env_setup/vars.env`](env_setup/vars.env) that was used for provisioning the environment. To start cleaning up the provisioned resources execute the following command:
 
