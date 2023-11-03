@@ -20,8 +20,9 @@ Modify the settings in [`examples.env`](examples.env) file to reflect your envir
 NOTE: Ensure you are working from `examples` directory
 
 ```bash
-source ../env_setup/vars.env
-source examples.env
+export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+source ${REPO_ROOT_DIR}/env_setup/vars.env
+source ${REPO_ROOT_DIR}/examples/examples.env
 
 gcloud builds submit \
   --project $PROJECT_ID \
@@ -61,7 +62,7 @@ export PATH="${USER_HOME}:${PATH}"
 USER_HOME=$(bash -c "cd ~$(printf %q $USER) && pwd")
 curl -s "https://raw.githubusercontent.com/google/xpk/main/xpk.py" --output ${USER_HOME}/xpk.py
 chmod +x ${USER_HOME}/xpk.py
-export PATH="${USER_HOME}:${PATH}"
+export PYTHONPATH="$USER_HOME:$PYTHON_PATH"
 ```
 
 

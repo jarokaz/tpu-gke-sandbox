@@ -2,6 +2,11 @@
 
 **xpk** [(Accelerated Processing Kit, pronounced x-p-k)](https://github.com/google/maxtext/tree/main/xpk) is a Python based tool designed to help Cloud developers to orchestrate training jobs on accelerators such as TPUs and GPUs on GKE. 
 
+There are two set of examples in this folder showing how to configure and run training workloads using **xpk**:
+
+- Experimenting with different data and model parallelism strategies with in single slice and multislice TPU configurations.
+- Pre-training a MaxText 6.5B parameter model in both single slice and multislice TPU configurations.
+
 **xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use its cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup.
 
 **xpk** uses [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://kueue.sigs.k8s.io/docs/overview/) for running training workloads. It assumes that there is a LocalQueue named `multislice-queue` in the `default` namespace and submits workloads to this queue. If you used the `default` namespace when provisioning your environment you can use it as is. If you used a different namespace, create a local queue using the following command.
@@ -51,43 +56,50 @@ If you don't want this layering behavior, you can specify the image to use throu
 
 In our examples, we will set the `--base-docker-image` to the [MaxText training image](../README.md#building-training-container-image) build as part of prerequisites for running examples. Make sure that you have a working installation of **docker** before running the below examples.
 
+Run the following commands to set the environment variables you have used for configuration during provisioning:
+
+```bash
+export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+source ${REPO_ROOT_DIR}/env_setup/vars.env
+source ${REPO_ROOT_DIR}/examples/examples.env
+```
 
 ## Running **xpk** smoke test
 
-To verify that you can successfuly run **xpk** workloads, we will submit a smoke test workload on your cluster. The commands refer to the `vars.env` and `examples.env` to reflect your environment. Use the MaxText training image URI to set the `CONTAINER_IMAGE` variable. Configure `WORKLOAD_ID` and execute the following command from `xpk` folder:
+To verify that you can successfuly run **xpk** workloads, we will submit a smoke test workload on your cluster. The commands refer to the [`vars.env`](../../env_setup/vars.env) and [`examples.env`](../examples.env) to reflect your environment. Use the MaxText training image URI to set the `CONTAINER_IMAGE` variable. Configure `WORKLOAD_ID` (for e.g. xpk-test-workload-1) and execute the following command from `xpk` folder:
 
 ```bash
-source ../../env_setup/vars.env
-source examples.env
+export WORKLOAD_ID=YOUR_WORKLOAD_ID
 
-WORKLOAD_ID=xpk-test-workload-1
-
-python3 xpk.py workload create \
+python3 -m xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAX_TEXT_IMAGE_URI \
---cluster $CLUSTER_NAME \ss
---tpu-type=$TPU_TYPE \
---zone=$ZONE \
+--base-docker-image $MAXTEXT_IMAGE_URI \
+--cluster $CLUSTER_NAME \
+--tpu-type $TPU_TYPE \
+--zone $ZONE \
 --command "echo goodbye" 
 ```
 
 To delete the smoke test workload execute:
 
-```
-python3 xpk.py workload delete \
+```bash
+python3 -m xpk.py workload delete \
 --workload $WORKLOAD_ID \
---cluster $CLUSTER_NAME
+--cluster $CLUSTER_NAME \
+--zone $ZONE
 ```
 
 ## Running sharding experiments
 
-In this section we provide instructions for running parallelism experiments similar to the `tpu_hello_world` examples in the `jobset` section.
+In this section we provide instructions for running parallelism experiments similar to the `tpu_hello_world` examples in the `jobset` [section](../jobset/README.md#example-1-tpu-hello-world-examples).
 
 ### Single slice ICI FSDP
 
-Create a workload script.
+To run a configuration for a single slice workload with Interchip Interconnect (ICI) sharding using Fully Sharded Data Parallelism (FSDP), follow the steps below:
 
-```
+- Create a workload script
+
+```bash
 cat <<EOF >./ici-fsdp.sh
 #!/bin/bash
 set -e
@@ -97,37 +109,38 @@ python3 pedagogical_examples/shardings.py --ici_fsdp_parallelism=16 --batch_size
 EOF
 ```
 
-Submit a workload.
+- Submit a workload
 
-```
-WORKLOAD_ID=xpk-hello-world-single-slice-1
-NUM_SLICES=1
+```bash
+export WORKLOAD_ID=xpk-hello-world-single-slice-1
+export NUM_SLICES=1
 
-
-python3 xpk.py workload create \
+python3 -m xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAXTEXT_TRAINING_CONTAINER_IMAGE \
+--base-docker-image $MAXTEXT_IMAGE_URI \
 --cluster $CLUSTER_NAME \
---tpu-type=$TPU_TYPE \
---zone=$ZONE \
---num-slices=$NUM_SLICES \
+--tpu-type $TPU_TYPE \
+--zone $ZONE \
+--num-slices $NUM_SLICES \
 --command "bash ici-fsdp.sh" 
 ```
 
+- To delete the workload execute:
 
-If you wanted to delete the workload.
-
-```
-python3 xpk.py workload delete \
+```bash
+python3 -m xpk.py workload delete \
 --workload $WORKLOAD_ID \
---cluster $CLUSTER_NAME
+--cluster $CLUSTER_NAME \
+--zone $ZONE
 ```
 
 ### Multislice DCN DP and ICI FSDP
 
-Create a workload script.
+The below examples shows configuration for a multislice workload with data parallelism (DP) over data-center network (DCN) connections and FSDP over ICI.
 
-```
+- Create a workload script
+
+```bash
 cat <<EOF >./dcn-dp-ici-fsdp.sh
 #!/bin/bash
 set -e
@@ -137,41 +150,43 @@ python3 pedagogical_examples/shardings.py --dcn_data_parallelism=2 --ici_fsdp_pa
 EOF
 ```
 
-Submit a workload.
+- Submit a workload
 
-```
+```bash
 WORKLOAD_ID=xpk-hello-world-multi-slice-1
 NUM_SLICES=2
 
-
-python3 xpk.py workload create \
+python3 -m xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAXTEXT_TRAINING_CONTAINER_IMAGE \
+--base-docker-image $MAXTEXT_IMAGE_URI \
 --cluster $CLUSTER_NAME \
---tpu-type=$TPU_TYPE \
---zone=$ZONE \
---num-slices=$NUM_SLICES \
+--tpu-type $TPU_TYPE \
+--zone $ZONE \
+--num-slices $NUM_SLICES \
 --command "bash dcn-dp-ici-fsdp.sh" 
 ```
 
+- To delete the workload execute:
 
-If you wanted to delete the workload.
-
-```
-python3 xpk.py workload delete \
+```bash
+python3 -m xpk.py workload delete \
 --workload $WORKLOAD_ID \
---cluster $CLUSTER_NAME
+--cluster $CLUSTER_NAME \
+--zone $ZONE
 ```
 
 ## Running MaxText pretraining workloads
 
-In this section we provide instructions for running MaxText pretraining for a 6.5B parameters model using the same configuration settings as in the `examples\jobset\maxtext`.
+In this section we provide instructions for running MaxText pretraining for a 6.5B parameters model using the same configuration settings as in the [`examples\jobset\maxtext`](../jobset/README.md#example-2-maxtext-pre-training-examples).
 
 ### Single slice pretraining
 
-Create a workload script. Make sure to modify the settings to reflect your environment
+- Create a workload script. Make sure to modify the settings to reflect your environment:
 
-```
+```bash
+export WORKLOAD_ID=xpk-single-slice-6b-101
+export NUM_SLICES=1
+
 cat <<EOF >./single-slice-6b.sh
 #!/bin/bash
 set -e
@@ -179,9 +194,9 @@ set -e
 export LIBTPU_INIT_ARGS="--xla_enable_async_all_gather=true TPU_MEGACORE=MEGACORE_DENSE"
 
 python3 MaxText/train.py MaxText/configs/base.yml \
-run_name=single-slice-6b-101 \
-dataset_path=gs://jk-gke-aiml-repository/datasets \
-base_output_directory=gs://jk-gke-aiml-repository/runs \
+run_name=$WORKLOAD_ID \
+dataset_path=$DATASETS_URI \
+base_output_directory=gs://$ARTIFACT_REPOSITORY_BUCKET_NAME/runs \
 steps=200 log_period=50 save_period=100 \
 per_device_batch_size=16 \
 dcn_data_parallelism=1 ici_fsdp_parallelism=16 \
@@ -191,41 +206,36 @@ base_emb_dim=4096 base_num_heads=16 base_mlp_dim=16384 head_dim=256 base_num_dec
 EOF
 ```
 
-Submit a workload.
+- Submit a workload
 
-```
-CLUSTER_NAME=jk-tpu-training-cluster
-TPU_TYPE=v4-32
-ZONE=us-central2-b
-MAXTEXT_TRAINING_CONTAINER_IMAGE=gcr.io/jk-mlops-dev/maxtext-runner
-
-WORKLOAD_ID=single-slice-6b-101
-NUM_SLICES=1
-
-python3 xpk.py workload create \
+```bash
+python3 -m xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAXTEXT_TRAINING_CONTAINER_IMAGE \
+--base-docker-image $MAXTEXT_IMAGE_URI \
 --cluster $CLUSTER_NAME \
---tpu-type=$TPU_TYPE \
---zone=$ZONE \
---num-slices=$NUM_SLICES \
+--tpu-type $TPU_TYPE \
+--zone $ZONE \
+--num-slices $NUM_SLICES \
 --command "bash single-slice-6b.sh"
 ```
 
+- To delete the workload execute:
 
-To delete the workload.
-
-```
-python3 xpk.py workload delete \
+```bash
+python3 -m xpk.py workload delete \
 --workload $WORKLOAD_ID \
---cluster $CLUSTER_NAME
+--cluster $CLUSTER_NAME \
+--zone $ZONE
 ```
 
 ### Multislice pretraining
 
-Create a workload script. Make sure to modify the settings to reflect your environment
+- Create a workload script. Make sure to modify the settings to reflect your environment:
 
-```
+```bash
+export WORKLOAD_ID=xpk-multi-slice-6b-101
+export NUM_SLICES=2
+
 cat <<EOF >./multi-slice-6b.sh
 #!/bin/bash
 set -e
@@ -233,9 +243,9 @@ set -e
 export LIBTPU_INIT_ARGS="--xla_enable_async_all_gather=true TPU_MEGACORE=MEGACORE_DENSE"
 
 python3 MaxText/train.py MaxText/configs/base.yml \
-run_name=multi-slice-6b-501 \
-dataset_path=gs://jk-gke-aiml-repository/datasets \
-base_output_directory=gs://jk-gke-aiml-repository/runs \
+run_name=$WORKLOAD_ID \
+dataset_path=$DATASETS_URI \
+base_output_directory=gs://$ARTIFACT_REPOSITORY_BUCKET_NAME/runs \
 steps=200 log_period=50 save_period=100 \
 per_device_batch_size=16 \
 dcn_data_parallelism=2 ici_fsdp_parallelism=16 \
@@ -245,33 +255,24 @@ base_emb_dim=4096 base_num_heads=16 base_mlp_dim=16384 head_dim=256 base_num_dec
 EOF
 ```
 
-Submit a workload.
+- Submit a workload
 
-```
-CLUSTER_NAME=jk-tpu-training-cluster
-TPU_TYPE=v4-32
-ZONE=us-central2-b
-MAXTEXT_TRAINING_CONTAINER_IMAGE=gcr.io/jk-mlops-dev/maxtext-runner
-
-WORKLOAD_ID=multi-slice-6b-501
-NUM_SLICES=2
-
-python3 xpk.py workload create \
+```bash
+python3 -m xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAXTEXT_TRAINING_CONTAINER_IMAGE \
+--base-docker-image $MAXTEXT_IMAGE_URI \
 --cluster $CLUSTER_NAME \
---tpu-type=$TPU_TYPE \
---zone=$ZONE \
---num-slices=$NUM_SLICES \
+--tpu-type $TPU_TYPE \
+--zone $ZONE \
+--num-slices $NUM_SLICES \
 --command "bash multi-slice-6b.sh"
 ```
 
-To delete the workload.
+- To delete the workload execute:
 
-```
-python3 xpk.py workload delete \
+```bash
+python3 -m xpk.py workload delete \
 --workload $WORKLOAD_ID \
---cluster $CLUSTER_NAME
+--cluster $CLUSTER_NAME \
+--zone $ZONE
 ```
-
-

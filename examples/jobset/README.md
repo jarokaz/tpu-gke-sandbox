@@ -16,6 +16,13 @@ The examples in this folder show how to configure and run JobSet workloads using
 > - Update the `parallelism` and `completions` fields in the `spec.replicatedJobs.template.spec` with 4 - a v4-64 slice comprises 4 TPU VMs. 
 > You can refer to the [table](../../README.md#input-variables-in-the-terraform-configuration) in Terraform configuration for TPU slice configuration. 
 
+Run the following commands to set the environment variables you have used for configuration during provisioning:
+
+```bash
+export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+source ${REPO_ROOT_DIR}/env_setup/vars.env
+source ${REPO_ROOT_DIR}/examples/examples.env
+```
 
 ## EXAMPLE 1. TPU Hello World examples
 

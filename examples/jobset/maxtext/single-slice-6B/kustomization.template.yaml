@@ -18,7 +18,7 @@ kind: Kustomization
 namespace: tpu-training
 images:
 - name: maxtext-runner-image
-  newName: $MAX_TEXT_IMAGE_URI
+  newName: $MAXTEXT_IMAGE_URI
   newTag: latest
 - name: tb-uploader-image
   newName: $TB_UPLOADER_IMAGE_URI
