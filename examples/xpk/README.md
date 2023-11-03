@@ -62,6 +62,7 @@ Run the following commands to set the environment variables you have used for co
 export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
 source ${REPO_ROOT_DIR}/env_setup/vars.env
 source ${REPO_ROOT_DIR}/examples/examples.env
+pushd ${REPO_ROOT_DIR}/examples/xpk
 ```
 
 ## Running **xpk** smoke test

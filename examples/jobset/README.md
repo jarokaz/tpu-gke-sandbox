@@ -16,13 +16,6 @@ The examples in this folder show how to configure and run JobSet workloads using
 > - Update the `parallelism` and `completions` fields in the `spec.replicatedJobs.template.spec` with 4 - a v4-64 slice comprises 4 TPU VMs. 
 > You can refer to the [table](../../main/README.md#input-variables-in-the-terraform-configuration) in Terraform configuration for TPU slice configuration. 
 
-Run the following commands to set the environment variables you have used for configuration during provisioning:
-
-```bash
-export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
-source ${REPO_ROOT_DIR}/env_setup/vars.env
-source ${REPO_ROOT_DIR}/examples/examples.env
-```
 
 ## EXAMPLE 1. TPU Hello World examples
 
@@ -38,6 +31,15 @@ We use `envsubst` tool to adapt the examples to your environment the `namespace`
 - As your recall, a Kueue LocalQueue used to admit workloads has been provisioned in this namespace. The `newName` property of the `images` field with the name of your MaxText training container image (`$MAX_TEXT_IMAGE_NAME` in [`examples.env`](../examples.env)).
 
 ### Run jobs
+
+Run the following commands to set the environment variables you have used for configuration during provisioning:
+
+```bash
+export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+source ${REPO_ROOT_DIR}/env_setup/vars.env
+source ${REPO_ROOT_DIR}/examples/examples.env
+pushd ${REPO_ROOT_DIR}/examples/jobset/tpu_hello_world
+```
 
 To run a single slice example execute the following command from the [`tpu_hello_world`](tpu_hello_world) folder:
 
@@ -131,6 +133,15 @@ In both single slice and multislice examples, we use the `ARGS` field to set the
 > Make sure that the `REPLICAS` field and the `dcn_data_parallelism` and `ici_fsdp_parallelism` trainer parameters align with the TPU topology configured in your environment.
 
 ### Run jobs
+
+Run the following commands to set the environment variables you have used for configuration during provisioning:
+
+```bash
+export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+source ${REPO_ROOT_DIR}/env_setup/vars.env
+source ${REPO_ROOT_DIR}/examples/examples.env
+pushd ${REPO_ROOT_DIR}/examples/jobset/maxtext
+```
 
 To run a single slice example execute the following command from the [`maxtext`](maxtext) folder:
 

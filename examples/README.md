@@ -21,6 +21,7 @@ NOTE: Ensure you are working from `examples` directory
 
 ```bash
 export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
+pushd ${REPO_ROOT_DIR}/examples
 source ${REPO_ROOT_DIR}/env_setup/vars.env
 source ${REPO_ROOT_DIR}/examples/examples.env
 
