@@ -11,7 +11,6 @@ The guide covers two main topics:
 We also include Terraform configuration for provisioning the training environment and code samples for a variety of training workloads.
 
 
-
 ## Architecture of the training environment
 
 The diagram below depicts a high-level architecture of the training environment.
@@ -135,7 +134,7 @@ export TF_STATE_PREFIX=gke-tpu-training-environment
 ```
 
 - `PROJECT_ID` - your project ID
-- `REGION` - the region for a GKE cluster network (default: `us-central2`)
+- `REGION` - the region for a GKE cluster network (default: `us-central2`) based on [Cloud TPU region and zones](https://cloud.google.com/tpu/docs/regions-zones)
 - `ZONE` - the zone for your GKE cluster (default: `us-central2-b`)
 - `NETWORK_NAME` - the name for the network 
 - `SUBNET_NAME` - the name for the subnet
@@ -147,8 +146,8 @@ export TF_STATE_PREFIX=gke-tpu-training-environment
 - `TENSORBOARD_REGION` - The region for a Vertex TensorBoard instance (default: `us-central1`)
 - `ARTIFACT_REPOSITORY_BUCKET_NAME` - the name of the model artifacts repository Cloud Storage bucket
 - `ARTIFACT_REGISTRY_NAME` - the name of Artifact Registry repository to manage docker images
-- `JOBSET_API_VERSION` - the version of the (JobSet API)(https://github.com/kubernetes-sigs/jobset/releases) to download and setup
-- `KUEUE_API_VERSION` - the version of the (Kueue API)(https://github.com/kubernetes-sigs/kueue/releases) to download and setup
+- `JOBSET_API_VERSION` - the version of the [JobSet API](https://github.com/kubernetes-sigs/jobset/releases) to download and setup
+- `KUEUE_API_VERSION` - the version of the [Kueue API](https://github.com/kubernetes-sigs/kueue/releases) to download and setup
 - `TF_STATE_BUCKET` - the name of Cloud Storage bucket for Terraform to maintains configuration state
 - `TF_STATE_PREFIX` - the object prefix for Terraform to maintains configuration state in Cloud Storage bucket
 
@@ -179,7 +178,7 @@ The Terraform configuration supports the following input variables:
 | tensorboard_region | The compute region for Vertex AI TensorBoard  | NA|
 | artifact_repository_bucket_name|The name of the GCS bucket|NA|
 | zone | The zone for the TPU node pools. Make sure that the zone supports the required TPU resources| NA |
-| networt_name | The name of the network for the cluster | NA |
+| network_name | The name of the network for the cluster | NA |
 | subnet_name | The name of the subnet  for the cluster | NA |
 | subnet_ip_range | The IP address range for the subnet | 10.129.0.0/20 |
 | pods_ip_range | A secondary IP range for pods | 192.168.64.0/20 |
@@ -190,7 +189,7 @@ The Terraform configuration supports the following input variables:
 | cpu_pool_node_count | The number of nodes in a CPU node pool | 3 |
 | cpu_pool_machine_type | The machine type for the CPU node pool | n1-standard-4 |
 | cpu_pool_disk_type | The disk type for nodes in the CPU node pool | pd-standard|
-| cpu_pool_disk_size | The disk size for noded in the CPU node pool | 200GB |
+| cpu_pool_disk_size | The disk size for nodes in the CPU node pool | 200GB |
 | tpu_sa_name | The name of the service account that will be provisioned and used for Workload Identity | cloud-tpu-sa |
 | tpu_sa_roles | The roles to assign to the service account | roles/storage.objectAdmin, roles/logging.logWriter |
 | gke_sa_name | The name of the custom service account for node pools | gke-sa |
@@ -226,10 +225,18 @@ The `tpu_type` variable is a name of a TPU slice configuration as defined in the
 
 ## Training workloads examples
 
-The [`examples`](examples/) folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads. Refer to the [README](examples/README.md) in this folder for detailed instructions.
+The [`examples`](examples/) folder contains code samples that demonstrate how to configure, submit and manage a number of different training workloads.
 
-### TODO: Examples navigation
+- [Provision infrastructure](#provision-infrastructure)
+- [Setup prerequisites for running examples](examples/README.md#prerequisites-for-running-examples)
+- [Examples (`examples/`)](examples/README.md) demonstrates two approaches to orchestrate large-scale distributed training workloads on GKE using JobSet and **`xpk`**
+  - [JobSet (`examples/jobset`)](examples/jobset/README.md) shows configuring and running training workloads with **JobSet** and **Kueue** APIs using **Kustomize**.
+    - [TPU Hello World (`examples/jobset/tpu_hello_world`)](examples/jobset/README.md#example-1-tpu-hello-world-examples) shows examples of experimenting with different data and model parallelism strategies with in single slice and multislice TPU configurations.
+    - [MaxText (`examples/jobset/maxtext`)](examples/jobset/README.md#example-2-maxtext-pre-training-examples) shows examples of pre-training a MaxText 6.5B parameter model in both single slice and multislice TPU configurations.
+  - [xpk (`examples/xpk`)](examples/xpk/README.md) (Accelerated Processing Kit) shows examples of configuring and running training workloads using **xpk** for same as with JobSet APIs. 
 
+> [!IMPORTANT]
+> Refer to the [README](main/examples/README.md) in this folder for detailed instructions.
 
 ## Cleanup Environment 
 
