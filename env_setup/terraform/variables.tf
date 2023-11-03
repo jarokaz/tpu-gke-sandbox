@@ -128,6 +128,7 @@ variable "tpu_sa_roles" {
     "roles/storage.objectAdmin",
     "roles/logging.logWriter",
     "roles/aiplatform.user",
+    "roles/artifactregistry.reader"
     ] 
 }
 
@@ -142,6 +143,7 @@ variable "gke_sa_roles" {
     "storage.objectAdmin",
     "logging.logWriter",
     "aiplatform.user",
+    "artifactregistry.reader"
     ] 
 }
 

@@ -18,7 +18,7 @@ kind: Kustomization
 namespace: tpu-training
 images:
 - name: maxtext-runner-image
-  newName: gcr.io/$PROJECT_ID/$MAX_TEXT_IMAGE_NAME
+  newName: $MAX_TEXT_IMAGE_URI
   newTag: latest
 - name: tb-uploader-image
   newName: $TB_UPLOADER_IMAGE_URI
@@ -33,7 +33,7 @@ configMapGenerator:
   - RUN_NAME=$MAXTEXT_JOB_ID
   - BASE_OUTPUT_DIRECTORY=gs://$ARTIFACT_REPOSITORY_BUCKET_NAME/runs
   - DATASET_PATH=$DATASETS_URI
-  - TENSORBOARD_NAME=projects/895222332033/locations/us-central1/tensorboards/9050550799200944128
+  - TENSORBOARD_NAME=$TENSORBOARD_ID
   - ARGS="steps=200 log_period=50 save_period=100 dcn_data_parallelism=1 ici_fsdp_parallelism=16 per_device_batch_size=16 remat_policy=full base_emb_dim=4096 base_num_heads=16 base_mlp_dim=16384 head_dim=256 base_num_decoder_layers=32" 
   - LIBTPU_INIT_ARGS="--xla_enable_async_all_gather=true TPU_MEGACORE=MEGACORE_DENSE"
 

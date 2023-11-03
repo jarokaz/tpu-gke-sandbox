@@ -1,6 +1,6 @@
 # TPU training workloads examples
 
-Assuming you have provisioned the training environment as outlined in the [README](../README.md#provision-infrastructure) of the repo. In this reference guide  we recommend using the **JobSet** and **Kueue** APIs as the preferred way to orchestrate large-scale distributed training workloads on GKE. You can create JobSet yaml configurations in a variety of ways. Our examples demonstrate two approaches:
+Before continuing with this guide, ensure you have provisioned the training environment as outlined in the [README](../README.md#provision-infrastructure) of the repo. In this reference guide  we recommend using the **JobSet** and **Kueue** APIs as the preferred way to orchestrate large-scale distributed training workloads on GKE. You can create JobSet yaml configurations in a variety of ways. Our examples demonstrate two approaches:
 - Using [Kustomize](https://kustomize.io/). **Kustomize** is a tool that streamlines and simplifies the creation and adaptation of complex configurations like JobSets. It provides robust configuration management and template-free customization. The examples of creating JobSet configurations using Kustomize are in the `jobset` folder.
 - Using [xpk](https://github.com/google/maxtext/tree/main/xpk). **xpk** (Accelerated Processing Kit) is a Python-based tool that helps to orchestrate large-scale training jobs on GKE. **xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup. The **xpk** examples are in the `xpk` folder.
 
@@ -42,16 +42,28 @@ Run the following steps in your development environment (e.g. Cloud Shell) befor
 gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION
 ```
 
-> ![NOTE]
+> [!NOTE]
 > You may be prompted to to install the `gke-gcloud-auth-plugin` binary to use kubectl with the cluser. Run `gcloud components install gke-gcloud-auth-plugin` to install the plugin.
 
-- In addition, you need to install Kustomize. Please follow the instructions in the [Kustomize documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/). If you running from Cloud Shell, you can run the following commands to install Kustomize by downloading precompiled binaries.:
+
+- To install Kustomize, please follow the instructions in the [Kustomize documentation](https://kubectl.docs.kubernetes.io/installation/kustomize/). If you running from Cloud Shell, you can run the following commands to install Kustomize by downloading precompiled binaries.:
 
 ```bash
 USER_HOME=$(bash -c "cd ~$(printf %q $USER) && pwd")
 curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash -s -- ${USER_HOME}
 export PATH="${USER_HOME}:${PATH}"
 ```
+
+- **xpk** is implemented as a [Python script](https://github.com/google/xpk/blob/main/xpk.py) and distributed through the [xpk repo](https://github.com/google/xpk). To access **xpk** you can either clone the whole repo or download the `xpk.py` module.
+
+
+```bash
+USER_HOME=$(bash -c "cd ~$(printf %q $USER) && pwd")
+curl -s "https://raw.githubusercontent.com/google/xpk/main/xpk.py" --output ${USER_HOME}/xpk.py
+chmod +x ${USER_HOME}/xpk.py
+export PATH="${USER_HOME}:${PATH}"
+```
+
 
 ## Running examples
 

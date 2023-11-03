@@ -1,13 +1,12 @@
 # Running TPU workloads with xpk
 
-**xpk** [(Accelerated Processing Kit, pronounced x-p-k)](https://github.com/google/maxtext/tree/main/xpk)  is a Python based tool designed to help Cloud developers to orchestrate training jobs on accelerators such as TPUs and GPUs on GKE. 
+**xpk** [(Accelerated Processing Kit, pronounced x-p-k)](https://github.com/google/maxtext/tree/main/xpk) is a Python based tool designed to help Cloud developers to orchestrate training jobs on accelerators such as TPUs and GPUs on GKE. 
 
-**xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup.
-
+**xpk** provides a simple command-line interface for managing GKE clusters and submitting training workloads that are encapsulated as JobSet configurations. In this reference guide, we do not use its cluster management capabilities. We use **xpk** to configure and submit training workloads to the GKE-based training environment provisioned during the setup.
 
 **xpk** uses [JobSet](https://github.com/kubernetes-sigs/jobset) and [Kueue](https://kueue.sigs.k8s.io/docs/overview/) for running training workloads. It assumes that there is a LocalQueue named `multislice-queue` in the `default` namespace and submits workloads to this queue. If you used the `default` namespace when provisioning your environment you can use it as is. If you used a different namespace, create a local queue using the following command.
 
-```
+```bash
 cat <<EOF >./local-queue.yaml
 apiVersion: kueue.x-k8s.io/v1beta1
 kind: LocalQueue
@@ -42,41 +41,31 @@ kubectl apply -f local-queue.yaml
 |v5litepod-256|tpu-v5-lite-podslice|16x16|
 
 
-Refer to [xpk documentation](https://github.com/google/maxtext/tree/main/xpk) for detailed information on how to create, delete, and list workloads.
-
-## Installing **xpk**
-
-**xpk** is implemented as a [Python script](https://github.com/google/maxtext/blob/main/xpk/xpk.py) and currently distributed through the MaxText repo. To access **xpk** you can either clone the whole repo or download the `xpk.py` module.
+Refer to the [xpk documentation](https://github.com/google/maxtext/tree/main/xpk) for detailed information on how to create, delete, and list workloads.
 
 ## **xpk** and container images
 
-By default, when xpk prepares a workload it layers the local directory (--script-dir) into the base docker image, uploads the updated image to your project's Container Registry, and references the uploaded image in the JobSet template. You can specify the base docker image through the `--base-docker-image` parameter. If you do not specify the base image, xpk attempt to create one using the default settings embedded in `xpk.py`. **xpk** relies on the local installation of **docker**.
+By default, when xpk prepares a workload it layers the local directory (`--script-dir`) into the base docker image, uploads the updated image to your project's Container Registry, and references the uploaded image in the JobSet template. You can specify the base docker image through the `--base-docker-image` parameter. If you do not specify the base image, xpk attempts to create one using the default settings embedded in `xpk.py`. **xpk** relies on the local installation of **docker**.
 
 If you don't want this layering behavior, you can specify the image to use through the `--docker-image` parameter.
 
-In our examples, we will set the `--base-docker-image` to the MaxText training image. Make sure that you have a working installation of **docker** before running the below examples.
+In our examples, we will set the `--base-docker-image` to the [MaxText training image](../README.md#building-training-container-image) build as part of prerequisites for running examples. Make sure that you have a working installation of **docker** before running the below examples.
 
 
 ## Running **xpk** smoke test
 
-To verify that you can successfuly run **xpk** workloads on your cluster execute the following command. Make sure to update the below variables to reflect your environment. Use the MaxText training image URI to set the `CONTAINER_IMAGE` variable.
+To verify that you can successfuly run **xpk** workloads, we will submit a smoke test workload on your cluster. The commands refer to the `vars.env` and `examples.env` to reflect your environment. Use the MaxText training image URI to set the `CONTAINER_IMAGE` variable. Configure `WORKLOAD_ID` and execute the following command from `xpk` folder:
 
-```
-CLUSTER_NAME=jk-tpu-training-cluster
-TPU_TYPE=v4-32
-ZONE=us-central2-b
-MAXTEXT_TRAINING_CONTAINER_IMAGE=gcr.io/jk-mlops-dev/maxtext-runner
-```
+```bash
+source ../../env_setup/vars.env
+source examples.env
 
-Submit the smoke test workload.
-
-```
 WORKLOAD_ID=xpk-test-workload-1
 
 python3 xpk.py workload create \
 --workload $WORKLOAD_ID \
---base-docker-image $MAXTEXT_TRAINING_CONTAINER_IMAGE \
---cluster $CLUSTER_NAME \
+--base-docker-image $MAX_TEXT_IMAGE_URI \
+--cluster $CLUSTER_NAME \ss
 --tpu-type=$TPU_TYPE \
 --zone=$ZONE \
 --command "echo goodbye" 
