@@ -112,10 +112,11 @@ As mentioned earlier, environment provisioning is done using a Cloud Build job t
 
 ```bash
 export PROJECT_ID=YOUR_PROJECT_ID
+export RESOURCE_PREFIX=${PROJECT_ID}
 export REGION=us-central2
 export ZONE=us-central2-b
-export NETWORK_NAME=${PROJECT_ID}-network
-export SUBNET_NAME=${PROJECT_ID}-subnet
+export NETWORK_NAME=${RESOURCE_PREFIX}-network
+export SUBNET_NAME=${RESOURCE_PREFIX}-subnet
 export CLUSTER_NAME=gke-tpu-training-cluster
 export NAMESPACE=tpu-training
 export TPU_TYPE=v4-16
@@ -124,7 +125,7 @@ export NUM_OF_CHIPS=8
 
 export TENSORBOARD_REGION=us-central1
 export ARTIFACT_REGISTRY_NAME=gke-tpu-training
-export ARTIFACT_REPOSITORY_BUCKET_NAME=${PROJECT_ID}-aiml-repository
+export ARTIFACT_REPOSITORY_BUCKET_NAME=${RESOURCE_PREFIX}-aiml-repository
 
 export JOBSET_API_VERSION="v0.2.3"
 export KUEUE_API_VERSION="v0.4.2"
