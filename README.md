@@ -236,7 +236,7 @@ The [`examples`](examples/) folder contains code samples that demonstrate how to
   - [xpk (`examples/xpk`)](examples/xpk/README.md) (Accelerated Processing Kit) shows examples of configuring and running training workloads using **xpk** for same as with JobSet APIs. 
 
 > [!IMPORTANT]
-> Refer to the [README](main/examples/README.md) in this folder for detailed instructions.
+> Refer to the [README](examples/README.md) in `examples` folder for detailed instructions.
 
 ## Cleanup Environment 
 
