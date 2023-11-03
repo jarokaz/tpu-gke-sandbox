@@ -109,7 +109,7 @@ git clone https://github.com/jarokaz/tpu-gke-sandbox.git
 As mentioned earlier, environment provisioning is done using a Cloud Build job that runs Terraform manifests and environment setup steps. The Terraform configuration can be found in the [`env_setup/terraform`](env_setup/terraform) folder. The Terraform configuration supports a number of configurable inputs which are set using the included [`env_setup/vars.env`](env_setup/vars.env) file. Cloud Build provides Terraform the values set in this file to configure Terraform variables in [`env_setup/terraform/variables.tf`](env_setup/terraform/variables.tf). The configuration uses Google Cloud Storage as the backend for maintaining Terraform state.
 
 > [!IMPORTANT] 
-> To proceed, set the below environment variables in [`env_setup/vars.env`](env_setup/vars.env) to reflect your environment. By default, you will only need to provide your `PROJECT_ID`; replace "YOUR_PROJECT_ID" with the project ID of your Google Cloud project.
+> To proceed, set the below environment variables in [`env_setup/vars.env`](main/env_setup/vars.env) to reflect your environment. By default, you will only need to provide your `PROJECT_ID`; replace "YOUR_PROJECT_ID" with the project ID of your Google Cloud project.
 
 ```bash
 export PROJECT_ID=YOUR_PROJECT_ID
