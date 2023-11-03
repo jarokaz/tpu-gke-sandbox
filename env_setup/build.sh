@@ -15,7 +15,7 @@
 
 # Setting variables using vars.env 
 export REPO_ROOT_DIR=$(git rev-parse --show-toplevel)
-pushd ${REPO_ROOT_DIR}
+pushd ${REPO_ROOT_DIR}/env_setup
 source vars.env
 
 [[ ! "${PROJECT_ID}" ]] && echo -e "Please export PROJECT_ID variable (\e[95mexport PROJECT_ID=<YOUR_PROJECT_ID>\e[0m)\nExiting." && exit 0
